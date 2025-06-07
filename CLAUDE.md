@@ -18,6 +18,10 @@ bun run build     # Build the MCP server to dist/index.js
 node dist/index.js # Run the built MCP server
 # or for development: bun run src/index.ts
 
+# Testing
+bun test          # Run all tests
+bun test src/lib/todoist/client.spec.ts  # Run specific test file
+
 # Code quality
 bun run lint      # Check code with Biome
 bun run format    # Format and fix code with Biome
@@ -38,7 +42,9 @@ src/              # Source code
 ├── index.ts      # Main MCP server implementation
 ├── lib/
 │   └── todoist/  # Todoist API client wrapper
-│       └── client.ts # TodoistClient class
+│       ├── client.ts     # TodoistClient class with CRUD operations
+│       ├── types.ts      # TypeScript types and interfaces
+│       └── client.spec.ts # Comprehensive test suite
 scripts/          # Build and utility scripts
 ├── build.ts      # Bun.build configuration
 dist/             # Built output (executable with shebang)
@@ -49,14 +55,16 @@ dist/             # Built output (executable with shebang)
 **MCP Server Structure**: The main server is implemented in `src/index.ts` using the official `@modelcontextprotocol/sdk`. It follows the standard MCP pattern:
 
 - **Server Setup**: Creates MCP server with stdio transport for communication
-- **Request Handlers**: Implements MCP request handlers for resources and tools
+- **Request Handlers**: Implements MCP request handlers for resources and tools (currently stub implementations)
 - **Error Handling**: Uses `McpError` for standardized error responses
 
-**Todoist Integration Layer**: The project includes a `TodoistClient` class in `src/lib/todoist/client.ts` that wraps the `@doist/todoist-api-typescript` library. This provides a clean abstraction layer between the MCP server and the Todoist API.
+**Todoist Integration Layer**: The project includes a complete `TodoistClient` class in `src/lib/todoist/client.ts` that wraps the `@doist/todoist-api-typescript` library. This provides a clean abstraction layer between the MCP server and the Todoist API.
 
 **Current Implementation State**: 
-- TodoistClient skeleton is implemented with basic constructor accepting API token
-- MCP server handlers are still empty and need to be connected to TodoistClient
+- TodoistClient fully implemented with project CRUD operations (getProjects, getProject, createProject, updateProject, deleteProject)
+- Automatic pagination handling in getProjects() method
+- Comprehensive test suite with factory functions and mock implementations
+- MCP server handlers are still empty placeholders and need to be connected to TodoistClient
 - Focus is on project-related functionality first, then expanding to tasks and other features
 
 **Integration Pattern**: The TodoistClient uses underscore-prefixed private fields (`_api`) and accepts API token as a simple string parameter, leaving environment variable handling to the calling code.
@@ -79,9 +87,15 @@ dist/             # Built output (executable with shebang)
 - Uses double quotes and space indentation
 - Runs automatically on git commit via husky + lint-staged
 
+**Testing**: Uses bun:test with Jest-compatible API
+- Mock functions and module mocking via `mock()` and `mock.module()`
+- Factory functions for creating test data (e.g., `createMockProject()`)
+- Test file naming convention: `*.spec.ts`
+
 **TypeScript**: Configured for modern features with strict checking
 - ES modules with bundler resolution
 - Targets ESNext for Bun runtime compatibility
+- Local imports without `.js` extensions, MCP SDK imports require `.js`
 
 ## Key Implementation Notes
 
