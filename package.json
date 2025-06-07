@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
+    "build": "bun run build.ts",
     "lint": "biome check .",
     "format": "biome check --write ."
   },
