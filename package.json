@@ -4,16 +4,16 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/bun": "1.2.15",
-    "typescript": "5.8.3"
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome check --write ."
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.12.1"
   },
-  "scripts": {
-    "lint": "biome check .",
-    "format": "biome check --write ."
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "1.2.15",
+    "typescript": "5.8.3"
   }
 }
