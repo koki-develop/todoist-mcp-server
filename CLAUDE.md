@@ -54,3 +54,11 @@ bun run prepare   # Install git hooks (runs automatically on install)
 **Error Patterns**: Use `McpError` with appropriate `ErrorCode` enum values for consistent error handling across the MCP interface.
 
 **Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling changes separately from feature implementation.
+
+**Commit Messages**: Follow Conventional Commits specification (https://conventionalcommits.org/):
+- `feat:` for new features
+- `fix:` for bug fixes
+- `chore:` for tooling, dependencies, configuration
+- `docs:` for documentation changes
+- `style:` for formatting, code style changes
+- `refactor:` for code refactoring without functional changes
