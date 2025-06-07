@@ -11,5 +11,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.12.1"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome check --write ."
   }
 }
