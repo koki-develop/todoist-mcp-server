@@ -20,7 +20,7 @@ const server = new Server(
       resources: {},
       tools: {},
     },
-  }
+  },
 );
 
 server.setRequestHandler(ListResourcesRequestSchema, async () => {
@@ -32,7 +32,7 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
 server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   throw new McpError(
     ErrorCode.InvalidRequest,
-    `Unknown resource: ${request.params.uri}`
+    `Unknown resource: ${request.params.uri}`,
   );
 });
 
@@ -45,7 +45,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   throw new McpError(
     ErrorCode.InvalidRequest,
-    `Unknown tool: ${request.params.name}`
+    `Unknown tool: ${request.params.name}`,
   );
 });
 
