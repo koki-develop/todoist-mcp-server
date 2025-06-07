@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
-import { TodoistClient } from "./client.js";
+import { TodoistClient } from "./client";
 import type {
   CreateProjectParams,
   Project,
   UpdateProjectParams,
-} from "./types.js";
+} from "./types";
 
 /**
  * Factory function for creating mock Project objects with sensible defaults.

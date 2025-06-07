@@ -3,7 +3,7 @@ import type {
   CreateProjectParams,
   Project,
   UpdateProjectParams,
-} from "./types.js";
+} from "./types";
 
 export class TodoistClient {
   private _api: TodoistApi;
