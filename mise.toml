@@ -1,3 +1,10 @@
 [tools]
+# Runtime
 bun = "1.2.15"
 node = "22.16.0"
+
+# Linting tools
+rust = "1.87.0"
+"aqua:rhysd/actionlint" = "1.7.7"
+"aqua:suzuki-shunsuke/ghalint" = "1.4.1"
+"cargo:zizmor" = "1.9.0"
