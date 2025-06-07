@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(bun test:*)",
+      "Bash(bun run lint:*)",
+      "Bash(bun run build:*)",
+      "Bash(gh run view:*)",
+      "Bash(actionlint:*)",
+      "Bash(ghalint run:*)",
+      "Bash(zizmor:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:bun.sh)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:doist.github.io)",
+      "WebFetch(domain:developer.todoist.com)"
+    ],
+    "deny": []
+  }
+}
