@@ -8,7 +8,7 @@ import {
   McpError,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import packageJson from "./package.json" with { type: "json" };
+import packageJson from "../package.json" with { type: "json" };
 
 const server = new Server(
   {

@@ -5,7 +5,7 @@ import { $ } from "bun";
 await $`rm -rf dist`;
 
 await Bun.build({
-  entrypoints: ["./index.ts"],
+  entrypoints: ["./src/index.ts"],
   outdir: "./dist",
   target: "node",
   packages: "external",

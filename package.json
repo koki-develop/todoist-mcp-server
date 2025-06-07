@@ -1,12 +1,12 @@
 {
   "name": "todoist-mcp-server",
   "version": "0.0.1",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "build": "bun run build.ts",
+    "build": "bun run scripts/build.ts",
     "lint": "biome check .",
     "format": "biome check --write ."
   },
