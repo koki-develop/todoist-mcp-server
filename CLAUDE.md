@@ -9,11 +9,14 @@ This is a **Todoist MCP (Model Context Protocol) server** built with TypeScript 
 ## Development Commands
 
 ```bash
-# Install dependencies
-bun install
+# Install dependencies and setup tools
+bun install       # Install Node.js dependencies
+mise install      # Install required tool versions (Bun, Node.js)
 
-# Run the MCP server
-bun run index.ts
+# Build and run
+bun run build     # Build the MCP server to dist/index.js
+node dist/index.js # Run the built MCP server
+# or for development: bun run src/index.ts
 
 # Code quality
 bun run lint      # Check code with Biome
@@ -23,9 +26,19 @@ bun run format    # Format and fix code with Biome
 bun run prepare   # Install git hooks (runs automatically on install)
 ```
 
+## Project Structure
+
+```
+src/              # Source code
+├── index.ts      # Main MCP server implementation
+scripts/          # Build and utility scripts
+├── build.ts      # Bun.build configuration
+dist/             # Built output (executable with shebang)
+```
+
 ## Architecture
 
-**MCP Server Structure**: The main server is implemented in `index.ts` using the official `@modelcontextprotocol/sdk`. It follows the standard MCP pattern:
+**MCP Server Structure**: The main server is implemented in `src/index.ts` using the official `@modelcontextprotocol/sdk`. It follows the standard MCP pattern:
 
 - **Server Setup**: Creates MCP server with stdio transport for communication
 - **Request Handlers**: Implements MCP request handlers for resources and tools
@@ -38,7 +51,16 @@ bun run prepare   # Install git hooks (runs automatically on install)
 
 ## Development Tooling
 
-**Biome**: Replaces ESLint + Prettier with a single fast tool
+**Tool Version Management**: Uses `mise.toml` for reproducible environments
+- Bun 1.2.15 for development and package management  
+- Node.js 22.16.0 for production runtime
+
+**Build System**: Custom Bun.build configuration in `scripts/build.ts`
+- Targets Node.js runtime with external packages
+- Adds executable shebang to output
+- Cleans and rebuilds to `dist/` directory
+
+**Code Quality**: Biome replaces ESLint + Prettier
 - Enforces unused imports/variables as errors
 - Uses double quotes and space indentation
 - Runs automatically on git commit via husky + lint-staged
