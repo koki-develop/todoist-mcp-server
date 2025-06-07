@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare": "husky",
     "lint": "biome check .",
     "format": "biome check --write ."
   },
