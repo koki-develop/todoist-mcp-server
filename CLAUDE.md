@@ -11,7 +11,7 @@ This is a **Todoist MCP (Model Context Protocol) server** built with TypeScript 
 ```bash
 # Install dependencies and setup tools
 bun install       # Install Node.js dependencies
-mise install      # Install required tool versions (Bun, Node.js)
+mise install      # Install required tool versions (Bun, Node.js, linting tools)
 
 # Build and run
 bun run build     # Build the MCP server to dist/index.js
@@ -21,6 +21,11 @@ node dist/index.js # Run the built MCP server
 # Code quality
 bun run lint      # Check code with Biome
 bun run format    # Format and fix code with Biome
+
+# GitHub Actions linting (requires mise tools)
+actionlint        # Lint GitHub Actions workflow files
+ghalint run       # Check GitHub Actions policies
+zizmor . --persona=auditor  # Security audit GitHub Actions
 
 # Development workflow
 bun run prepare   # Install git hooks (runs automatically on install)
@@ -54,6 +59,8 @@ dist/             # Built output (executable with shebang)
 **Tool Version Management**: Uses `mise.toml` for reproducible environments
 - Bun 1.2.15 for development and package management  
 - Node.js 22.16.0 for production runtime
+- Rust 1.87.0 for cargo-based tools
+- GitHub Actions linting tools: actionlint, ghalint (via aqua), zizmor (via cargo)
 
 **Build System**: Custom Bun.build configuration in `scripts/build.ts`
 - Targets Node.js runtime with external packages
@@ -81,6 +88,7 @@ dist/             # Built output (executable with shebang)
 - `feat:` for new features
 - `fix:` for bug fixes
 - `chore:` for tooling, dependencies, configuration
+- `ci:` for CI/CD, GitHub Actions, and build system changes
 - `docs:` for documentation changes
 - `style:` for formatting, code style changes
 - `refactor:` for code refactoring without functional changes
