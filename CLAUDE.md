@@ -36,6 +36,9 @@ bun run prepare   # Install git hooks (runs automatically on install)
 ```
 src/              # Source code
 ├── index.ts      # Main MCP server implementation
+├── lib/
+│   └── todoist/  # Todoist API client wrapper
+│       └── client.ts # TodoistClient class
 scripts/          # Build and utility scripts
 ├── build.ts      # Bun.build configuration
 dist/             # Built output (executable with shebang)
@@ -49,10 +52,14 @@ dist/             # Built output (executable with shebang)
 - **Request Handlers**: Implements MCP request handlers for resources and tools
 - **Error Handling**: Uses `McpError` for standardized error responses
 
-**Current State**: The server is scaffolded with empty handlers. Actual Todoist integration needs implementation:
-- Resources: For reading Todoist data (tasks, projects, labels)
-- Tools: For modifying Todoist data (create/update/delete tasks)
-- Authentication: API token handling for Todoist API
+**Todoist Integration Layer**: The project includes a `TodoistClient` class in `src/lib/todoist/client.ts` that wraps the `@doist/todoist-api-typescript` library. This provides a clean abstraction layer between the MCP server and the Todoist API.
+
+**Current Implementation State**: 
+- TodoistClient skeleton is implemented with basic constructor accepting API token
+- MCP server handlers are still empty and need to be connected to TodoistClient
+- Focus is on project-related functionality first, then expanding to tasks and other features
+
+**Integration Pattern**: The TodoistClient uses underscore-prefixed private fields (`_api`) and accepts API token as a simple string parameter, leaving environment variable handling to the calling code.
 
 ## Development Tooling
 
@@ -82,7 +89,7 @@ dist/             # Built output (executable with shebang)
 
 **Error Patterns**: Use `McpError` with appropriate `ErrorCode` enum values for consistent error handling across the MCP interface.
 
-**Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling changes separately from feature implementation.
+**Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling/dependency changes separately from feature implementation. Prefer `chore:` for skeleton implementations that don't yet provide user-facing functionality.
 
 **Commit Messages**: Follow Conventional Commits specification (https://conventionalcommits.org/):
 - `feat:` for new features
