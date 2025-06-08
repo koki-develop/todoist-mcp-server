@@ -7,13 +7,6 @@ import type { TodoistClient } from "../../lib/todoist/client";
 
 // Resource-related schemas (used only in this file)
 const taskIdSchema = z.string();
-const taskFiltersSchema = z.object({
-  projectId: z.string().optional(),
-  sectionId: z.string().optional(),
-  labelId: z.string().optional(),
-  filter: z.string().optional(),
-  lang: z.string().optional(),
-}).optional();
 
 export function registerTaskResources(
   server: McpServer,
