@@ -29,15 +29,12 @@ jobs:
       issues: read
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Run Claude Code
-        id: claude
-        uses: anthropics/claude-code-action@47ea5c2a699c59955750d39be0a9ba04bbe9dfb9 # v0.0.15
+      - uses: anthropics/claude-code-action@47ea5c2a699c59955750d39be0a9ba04bbe9dfb9 # v0.0.15
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 
