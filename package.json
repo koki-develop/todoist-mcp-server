@@ -8,7 +8,9 @@
     "prepare": "husky",
     "build": "bun run scripts/build.ts",
     "lint": "biome check .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "preinspector": "bun run build",
+    "inspector": "mcp-inspector dist/index.js"
   },
   "dependencies": {
     "@doist/todoist-api-typescript": "5.0.0",
