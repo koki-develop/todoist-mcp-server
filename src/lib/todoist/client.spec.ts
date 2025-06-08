@@ -2,8 +2,12 @@ import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { TodoistClient } from "./client";
 import type {
   CreateProjectParams,
+  CreateTaskParams,
+  GetTasksParams,
   Project,
+  Task,
   UpdateProjectParams,
+  UpdateTaskParams,
 } from "./types";
 
 /**
@@ -35,6 +39,34 @@ function createMockProject(overrides: Partial<Project> = {}): Project {
   };
 }
 
+/**
+ * Factory function for creating mock Task objects with sensible defaults.
+ * Useful for reducing test boilerplate and focusing on test-specific data.
+ */
+function createMockTask(overrides: Partial<Task> = {}): Task {
+  return {
+    id: "1",
+    content: "Test Task",
+    description: "",
+    projectId: "1",
+    sectionId: null,
+    parentId: null,
+    childOrder: 1,
+    labels: [],
+    priority: 1,
+    due: null,
+    url: "https://todoist.com/task/1",
+    commentCount: 0,
+    isCompleted: false,
+    createdAt: "2023-01-01T00:00:00Z",
+    updatedAt: "2023-01-01T00:00:00Z",
+    assigneeId: null,
+    assignerId: null,
+    duration: null,
+    ...overrides,
+  };
+}
+
 // Mock the entire TodoistApi with all required methods
 const mockTodoistApi = {
   getProjects: mock(),
@@ -42,6 +74,13 @@ const mockTodoistApi = {
   addProject: mock(),
   updateProject: mock(),
   deleteProject: mock(),
+  getTasks: mock(),
+  getTask: mock(),
+  addTask: mock(),
+  updateTask: mock(),
+  deleteTask: mock(),
+  closeTask: mock(),
+  reopenTask: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -59,6 +98,13 @@ describe("TodoistClient", () => {
     mockTodoistApi.addProject.mockClear();
     mockTodoistApi.updateProject.mockClear();
     mockTodoistApi.deleteProject.mockClear();
+    mockTodoistApi.getTasks.mockClear();
+    mockTodoistApi.getTask.mockClear();
+    mockTodoistApi.addTask.mockClear();
+    mockTodoistApi.updateTask.mockClear();
+    mockTodoistApi.deleteTask.mockClear();
+    mockTodoistApi.closeTask.mockClear();
+    mockTodoistApi.reopenTask.mockClear();
   });
 
   describe("getProjects", () => {
@@ -224,6 +270,197 @@ describe("TodoistClient", () => {
       // Verify: Returns boolean success result
       expect(result).toBe(true);
       expect(mockTodoistApi.deleteProject).toHaveBeenCalledWith("delete123");
+    });
+  });
+
+  describe("getTasks", () => {
+    test("should return all tasks without filters", async () => {
+      const mockTask1 = createMockTask({ id: "1", content: "Task 1" });
+      const mockTask2 = createMockTask({ 
+        id: "2", 
+        content: "Task 2", 
+        priority: 4,
+        labels: ["urgent"],
+        projectId: "2"
+      });
+
+      mockTodoistApi.getTasks.mockResolvedValueOnce([mockTask1, mockTask2]);
+
+      const tasks = await client.getTasks();
+
+      expect(tasks).toEqual([mockTask1, mockTask2]);
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith(undefined);
+    });
+
+    test("should return filtered tasks", async () => {
+      const mockTask = createMockTask({ 
+        id: "1", 
+        content: "Project Task",
+        projectId: "project123"
+      });
+
+      const params: GetTasksParams = {
+        projectId: "project123",
+        filter: "today",
+      };
+
+      mockTodoistApi.getTasks.mockResolvedValueOnce([mockTask]);
+
+      const tasks = await client.getTasks(params);
+
+      expect(tasks).toEqual([mockTask]);
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith(params);
+    });
+  });
+
+  describe("getTask", () => {
+    test("should return a specific task", async () => {
+      const mockTask = createMockTask({
+        id: "123",
+        content: "Specific Task",
+        description: "A detailed task",
+        priority: 3,
+        labels: ["important", "work"],
+      });
+
+      mockTodoistApi.getTask.mockResolvedValueOnce(mockTask);
+
+      const task = await client.getTask("123");
+
+      expect(task).toEqual(mockTask);
+      expect(mockTodoistApi.getTask).toHaveBeenCalledWith("123");
+    });
+  });
+
+  describe("createTask", () => {
+    test("should create a task with all parameters", async () => {
+      const params: CreateTaskParams = {
+        content: "New Task",
+        description: "Task description",
+        projectId: "project123",
+        priority: 4,
+        labels: ["urgent", "work"],
+        dueString: "tomorrow",
+        duration: 30,
+        durationUnit: "minute",
+      };
+
+      const mockCreatedTask = createMockTask({
+        id: "new123",
+        content: "New Task",
+        description: "Task description",
+        projectId: "project123",
+        priority: 4,
+        labels: ["urgent", "work"],
+        due: {
+          string: "tomorrow",
+          date: "2023-01-02",
+          datetime: null,
+          timezone: null,
+          isRecurring: false,
+        },
+        duration: {
+          amount: 30,
+          unit: "minute",
+        },
+      });
+
+      mockTodoistApi.addTask.mockResolvedValueOnce(mockCreatedTask);
+
+      const task = await client.createTask(params);
+
+      expect(task).toEqual(mockCreatedTask);
+      expect(mockTodoistApi.addTask).toHaveBeenCalledWith(params);
+    });
+
+    test("should create a task with minimal parameters", async () => {
+      const params: CreateTaskParams = { content: "Simple Task" };
+      const mockCreatedTask = createMockTask({
+        id: "simple123",
+        content: "Simple Task",
+      });
+
+      mockTodoistApi.addTask.mockResolvedValueOnce(mockCreatedTask);
+
+      const task = await client.createTask(params);
+
+      expect(task).toEqual(mockCreatedTask);
+      expect(mockTodoistApi.addTask).toHaveBeenCalledWith(params);
+    });
+  });
+
+  describe("updateTask", () => {
+    test("should update a task", async () => {
+      const params: UpdateTaskParams = {
+        content: "Updated Task",
+        description: "Updated description",
+        priority: 2,
+        labels: ["updated"],
+        dueDate: "2023-01-03",
+      };
+
+      const mockUpdatedTask = createMockTask({
+        id: "update123",
+        content: "Updated Task",
+        description: "Updated description",
+        priority: 2,
+        labels: ["updated"],
+        due: {
+          string: "Jan 3",
+          date: "2023-01-03",
+          datetime: null,
+          timezone: null,
+          isRecurring: false,
+        },
+        updatedAt: "2023-01-02T00:00:00Z",
+      });
+
+      mockTodoistApi.updateTask.mockResolvedValueOnce(mockUpdatedTask);
+
+      const task = await client.updateTask("update123", params);
+
+      expect(task).toEqual(mockUpdatedTask);
+      expect(mockTodoistApi.updateTask).toHaveBeenCalledWith("update123", params);
+    });
+  });
+
+  describe("deleteTask", () => {
+    test("should delete a task", async () => {
+      mockTodoistApi.deleteTask.mockResolvedValueOnce(true);
+
+      const result = await client.deleteTask("delete123");
+
+      expect(result).toBe(true);
+      expect(mockTodoistApi.deleteTask).toHaveBeenCalledWith("delete123");
+    });
+  });
+
+  describe("closeTask", () => {
+    test("should close/complete a task", async () => {
+      mockTodoistApi.closeTask.mockResolvedValueOnce(true);
+
+      const result = await client.closeTask("close123");
+
+      expect(result).toBe(true);
+      expect(mockTodoistApi.closeTask).toHaveBeenCalledWith("close123");
+    });
+  });
+
+  describe("reopenTask", () => {
+    test("should reopen a completed task", async () => {
+      const mockReopenedTask = createMockTask({
+        id: "reopen123",
+        content: "Reopened Task",
+        isCompleted: false,
+        updatedAt: "2023-01-02T00:00:00Z",
+      });
+
+      mockTodoistApi.reopenTask.mockResolvedValueOnce(mockReopenedTask);
+
+      const task = await client.reopenTask("reopen123");
+
+      expect(task).toEqual(mockReopenedTask);
+      expect(mockTodoistApi.reopenTask).toHaveBeenCalledWith("reopen123");
     });
   });
 });

@@ -1,8 +1,12 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
   CreateProjectParams,
+  CreateTaskParams,
+  GetTasksParams,
   Project,
+  Task,
   UpdateProjectParams,
+  UpdateTaskParams,
 } from "./types";
 
 export class TodoistClient {
@@ -53,5 +57,36 @@ export class TodoistClient {
 
   async deleteProject(id: string): Promise<boolean> {
     return this._api.deleteProject(id);
+  }
+
+  async getTasks(params?: GetTasksParams): Promise<Task[]> {
+    return this._api.getTasks(params);
+  }
+
+  async getTask(id: string): Promise<Task> {
+    return this._api.getTask(id);
+  }
+
+  async createTask(params: CreateTaskParams): Promise<Task> {
+    return this._api.addTask(params);
+  }
+
+  async updateTask(
+    id: string,
+    params: UpdateTaskParams,
+  ): Promise<Task> {
+    return this._api.updateTask(id, params);
+  }
+
+  async deleteTask(id: string): Promise<boolean> {
+    return this._api.deleteTask(id);
+  }
+
+  async closeTask(id: string): Promise<boolean> {
+    return this._api.closeTask(id);
+  }
+
+  async reopenTask(id: string): Promise<Task> {
+    return this._api.reopenTask(id);
   }
 }
