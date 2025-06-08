@@ -120,6 +120,11 @@ Dockerfile        # Multi-stage Docker build with Bun
 - Test file naming convention: `*.spec.ts`
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 
+**CI/CD**: Comprehensive GitHub Actions workflows
+- **ci.yml**: lint, test, build (with Bun executable test), and Docker container testing
+- **actions-lint.yml**: GitHub Actions workflow validation (actionlint, ghalint, zizmor)
+- All jobs use pinned action versions (managed with pinact) and minimal permissions
+
 **TypeScript**: Configured for modern features with strict checking
 - ES modules with bundler resolution
 - Targets ESNext for Bun runtime compatibility
