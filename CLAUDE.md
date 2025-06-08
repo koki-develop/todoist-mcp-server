@@ -51,7 +51,7 @@ src/              # Source code
 │   │   └── projects.ts   # Project resources + Zod schemas
 │   └── tools/     # Tool handlers with co-located schemas  
 │       ├── index.ts      # registerTools() aggregator
-│       └── projects.ts   # Project tools + Zod schemas (future)
+│       └── projects.ts   # Project management tools (create, update, delete)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -85,8 +85,8 @@ dist/             # Built output (executable with shebang)
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Resources**: Project list (`todoist://projects`) and individual projects (`todoist://projects/{id}`) implemented
-- **Tools**: Structure ready but not yet implemented (placeholder in `src/mcp/tools/projects.ts`)
+- **Resources**: Project list (`todoist://projects`) and individual projects (`todoist://projects/{id}`) implemented with comprehensive descriptions
+- **Tools**: Complete project management implementation with create, update, and delete operations
 - **Testing**: Comprehensive TodoistClient test suite + MCP Inspector for visual testing
 - **Architecture**: Extensible structure for adding tasks, labels, comments features
 
@@ -101,6 +101,7 @@ dist/             # Built output (executable with shebang)
 **Build System**: Custom Bun.build configuration in `scripts/build.ts`
 - Targets Node.js runtime with external packages
 - Adds executable shebang to output
+- Automatically sets executable permissions via `chmod +x dist/index.js`
 - Cleans and rebuilds to `dist/` directory
 
 **Code Quality**: Biome replaces ESLint + Prettier
@@ -127,11 +128,17 @@ dist/             # Built output (executable with shebang)
 
 **Colocation Pattern**: Schemas are defined within the same file as their usage (resources/tools) rather than centralized, improving maintainability and reducing coupling.
 
+**MCP Tool Development Pattern**: For server.tool() implementations:
+- Use `ZodRawShape` (object with Zod schemas) instead of `ZodObject` for parameter schemas
+- Add comprehensive `.describe()` annotations for all parameters for better UX
+- Include detailed tool descriptions explaining functionality, parameters, and safety warnings
+- Return structured responses with both success messages and complete object data
+
 **Extension Strategy**: New features should follow the pattern:
 - Add new files to `src/mcp/resources/` or `src/mcp/tools/` 
 - Co-locate Zod schemas with their usage
 - Register in respective `index.ts` aggregators
-- Use `ResourceTemplate` for parameterized resources
+- Use `ResourceTemplate` for parameterized resources with proper description metadata
 
 **Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling/dependency changes separately from feature implementation. Prefer `chore:` for skeleton implementations that don't yet provide user-facing functionality.
 
