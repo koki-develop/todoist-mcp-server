@@ -35,6 +35,9 @@ COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/package.json .
 
+# Add OCI source label for better image metadata
+LABEL org.opencontainers.image.source=https://github.com/koki-develop/todoist-mcp-server
+
 # Run as non-root user
 USER bun
 
