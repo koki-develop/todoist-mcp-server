@@ -1,7 +1,7 @@
 import type {
   PersonalProject,
-  WorkspaceProject,
   Task,
+  WorkspaceProject,
 } from "@doist/todoist-api-typescript";
 
 export type Project = PersonalProject | WorkspaceProject;

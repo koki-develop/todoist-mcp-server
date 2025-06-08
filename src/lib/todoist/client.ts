@@ -60,7 +60,8 @@ export class TodoistClient {
   }
 
   async getTasks(params?: GetTasksParams): Promise<Task[]> {
-    return this._api.getTasks(params);
+    const response = await this._api.getTasks(params);
+    return response.results;
   }
 
   async getTask(id: string): Promise<Task> {
@@ -68,14 +69,30 @@ export class TodoistClient {
   }
 
   async createTask(params: CreateTaskParams): Promise<Task> {
-    return this._api.addTask(params);
+    // Convert our params to match API requirements
+    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
+    const apiParams = { ...params } as any;
+    // API requires either dueDate OR dueDatetime, not both
+    if (apiParams.dueDate && apiParams.dueDatetime) {
+      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
+    }
+    // Map childOrder to order for API
+    if (apiParams.childOrder !== undefined) {
+      apiParams.order = apiParams.childOrder;
+      apiParams.childOrder = undefined;
+    }
+    return this._api.addTask(apiParams);
   }
 
-  async updateTask(
-    id: string,
-    params: UpdateTaskParams,
-  ): Promise<Task> {
-    return this._api.updateTask(id, params);
+  async updateTask(id: string, params: UpdateTaskParams): Promise<Task> {
+    // Convert our params to match API requirements
+    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
+    const apiParams = { ...params } as any;
+    // API requires either dueDate OR dueDatetime, not both
+    if (apiParams.dueDate && apiParams.dueDatetime) {
+      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
+    }
+    return this._api.updateTask(id, apiParams);
   }
 
   async deleteTask(id: string): Promise<boolean> {
@@ -86,7 +103,7 @@ export class TodoistClient {
     return this._api.closeTask(id);
   }
 
-  async reopenTask(id: string): Promise<Task> {
+  async reopenTask(id: string): Promise<boolean> {
     return this._api.reopenTask(id);
   }
 }

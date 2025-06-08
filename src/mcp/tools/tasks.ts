@@ -5,35 +5,115 @@ import type { TodoistClient } from "../../lib/todoist/client";
 // Tool-related schemas (used only in this file)
 const createTaskSchema = {
   content: z.string().min(1).describe("Task content/title"),
-  description: z.string().optional().describe("Detailed task description (optional)"),
-  projectId: z.string().optional().describe("ID of the project to add the task to (optional)"),
-  sectionId: z.string().optional().describe("ID of the section within the project (optional)"),
-  parentId: z.string().optional().describe("ID of parent task for creating subtasks (optional)"),
-  childOrder: z.number().optional().describe("Position in project/parent task (optional)"),
-  labels: z.array(z.string()).optional().describe("Array of label names to assign (optional)"),
-  priority: z.number().min(1).max(4).optional().describe("Priority level: 1=normal, 2=high, 3=very high, 4=urgent (optional)"),
-  dueString: z.string().optional().describe("Natural language due date like 'tomorrow', 'next Monday at 2pm' (optional)"),
-  dueDate: z.string().optional().describe("Due date in YYYY-MM-DD format (optional)"),
-  dueDatetime: z.string().optional().describe("Due datetime in RFC 3339 format (optional)"),
-  dueLang: z.string().optional().describe("Language for natural language due date parsing (optional)"),
-  assigneeId: z.string().optional().describe("ID of user to assign task to (optional)"),
+  description: z
+    .string()
+    .optional()
+    .describe("Detailed task description (optional)"),
+  projectId: z
+    .string()
+    .optional()
+    .describe("ID of the project to add the task to (optional)"),
+  sectionId: z
+    .string()
+    .optional()
+    .describe("ID of the section within the project (optional)"),
+  parentId: z
+    .string()
+    .optional()
+    .describe("ID of parent task for creating subtasks (optional)"),
+  childOrder: z
+    .number()
+    .optional()
+    .describe("Position in project/parent task (optional)"),
+  labels: z
+    .array(z.string())
+    .optional()
+    .describe("Array of label names to assign (optional)"),
+  priority: z
+    .number()
+    .min(1)
+    .max(4)
+    .optional()
+    .describe(
+      "Priority level: 1=normal, 2=high, 3=very high, 4=urgent (optional)",
+    ),
+  dueString: z
+    .string()
+    .optional()
+    .describe(
+      "Natural language due date like 'tomorrow', 'next Monday at 2pm' (optional)",
+    ),
+  dueDate: z
+    .string()
+    .optional()
+    .describe("Due date in YYYY-MM-DD format (optional)"),
+  dueDatetime: z
+    .string()
+    .optional()
+    .describe("Due datetime in RFC 3339 format (optional)"),
+  dueLang: z
+    .string()
+    .optional()
+    .describe("Language for natural language due date parsing (optional)"),
+  assigneeId: z
+    .string()
+    .optional()
+    .describe("ID of user to assign task to (optional)"),
   duration: z.number().optional().describe("Task duration amount (optional)"),
-  durationUnit: z.enum(["minute", "day"]).optional().describe("Duration unit: minute or day (optional)"),
+  durationUnit: z
+    .enum(["minute", "day"])
+    .optional()
+    .describe("Duration unit: minute or day (optional)"),
 };
 
 const updateTaskSchema = {
   id: z.string().min(1).describe("ID of the task to update"),
-  content: z.string().min(1).optional().describe("New task content/title (optional)"),
-  description: z.string().optional().describe("New task description (optional)"),
-  labels: z.array(z.string()).optional().describe("New array of label names (optional)"),
-  priority: z.number().min(1).max(4).optional().describe("New priority level: 1=normal, 2=high, 3=very high, 4=urgent (optional)"),
-  dueString: z.string().optional().describe("New natural language due date (optional)"),
-  dueDate: z.string().optional().describe("New due date in YYYY-MM-DD format (optional)"),
-  dueDatetime: z.string().optional().describe("New due datetime in RFC 3339 format (optional)"),
-  dueLang: z.string().optional().describe("Language for natural language due date parsing (optional)"),
+  content: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("New task content/title (optional)"),
+  description: z
+    .string()
+    .optional()
+    .describe("New task description (optional)"),
+  labels: z
+    .array(z.string())
+    .optional()
+    .describe("New array of label names (optional)"),
+  priority: z
+    .number()
+    .min(1)
+    .max(4)
+    .optional()
+    .describe(
+      "New priority level: 1=normal, 2=high, 3=very high, 4=urgent (optional)",
+    ),
+  dueString: z
+    .string()
+    .optional()
+    .describe("New natural language due date (optional)"),
+  dueDate: z
+    .string()
+    .optional()
+    .describe("New due date in YYYY-MM-DD format (optional)"),
+  dueDatetime: z
+    .string()
+    .optional()
+    .describe("New due datetime in RFC 3339 format (optional)"),
+  dueLang: z
+    .string()
+    .optional()
+    .describe("Language for natural language due date parsing (optional)"),
   assigneeId: z.string().optional().describe("New assignee user ID (optional)"),
-  duration: z.number().optional().describe("New task duration amount (optional)"),
-  durationUnit: z.enum(["minute", "day"]).optional().describe("New duration unit (optional)"),
+  duration: z
+    .number()
+    .optional()
+    .describe("New task duration amount (optional)"),
+  durationUnit: z
+    .enum(["minute", "day"])
+    .optional()
+    .describe("New duration unit (optional)"),
 };
 
 const deleteTaskSchema = {
@@ -54,22 +134,22 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
     "create_task",
     "Create a new Todoist task with comprehensive configuration options. Supports setting task content, detailed descriptions, project and section assignment, parent-child relationships for subtasks, priority levels (1=normal to 4=urgent), natural language due dates, label assignments, task duration estimates, and user assignments. Returns the complete task object with all metadata upon successful creation.",
     createTaskSchema,
-    async ({ 
-      content, 
-      description, 
-      projectId, 
-      sectionId, 
-      parentId, 
-      childOrder, 
-      labels, 
-      priority, 
-      dueString, 
-      dueDate, 
-      dueDatetime, 
-      dueLang, 
-      assigneeId, 
-      duration, 
-      durationUnit 
+    async ({
+      content,
+      description,
+      projectId,
+      sectionId,
+      parentId,
+      childOrder,
+      labels,
+      priority,
+      dueString,
+      dueDate,
+      dueDatetime,
+      dueLang,
+      assigneeId,
+      duration,
+      durationUnit,
     }) => {
       const task = await client.createTask({
         content,
@@ -109,19 +189,19 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
     "update_task",
     "Modify the properties of an existing Todoist task. Allows you to change task content, description, labels, priority level, due dates, assignments, and duration estimates. All parameters except the task ID are optional, so you can update only the specific properties you want to change. Supports natural language due date parsing and maintains task relationships. Returns the updated task object with all current metadata.",
     updateTaskSchema,
-    async ({ 
-      id, 
-      content, 
-      description, 
-      labels, 
-      priority, 
-      dueString, 
-      dueDate, 
-      dueDatetime, 
-      dueLang, 
-      assigneeId, 
-      duration, 
-      durationUnit 
+    async ({
+      id,
+      content,
+      description,
+      labels,
+      priority,
+      dueString,
+      dueDate,
+      dueDatetime,
+      dueLang,
+      assigneeId,
+      duration,
+      durationUnit,
     }) => {
       const task = await client.updateTask(id, {
         content,
@@ -200,17 +280,29 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
     "Reopen a previously completed Todoist task, returning it to active status. This action restores the task to its previous state before completion, making it available for further work. All task metadata, labels, due dates, and assignments are preserved. Returns the reopened task object with updated status.",
     reopenTaskSchema,
     async ({ id }) => {
-      const task = await client.reopenTask(id);
+      const success = await client.reopenTask(id);
 
+      if (success) {
+        // Get the reopened task to return its details
+        const task = await client.getTask(id);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Task "${task.content}" (ID: ${task.id}) reopened successfully`,
+            },
+            {
+              type: "text",
+              text: JSON.stringify(task, null, 2),
+            },
+          ],
+        };
+      }
       return {
         content: [
           {
             type: "text",
-            text: `Task "${task.content}" (ID: ${task.id}) reopened successfully`,
-          },
-          {
-            type: "text",
-            text: JSON.stringify(task, null, 2),
+            text: `Failed to reopen task with ID: ${id}`,
           },
         ],
       };
