@@ -9,7 +9,6 @@ await Bun.build({
   outdir: "./dist",
   target: "bun",
   packages: "external",
-  banner: "#!/usr/bin/env bun",
 });
 
 // Make the output file executable
