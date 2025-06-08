@@ -37,5 +37,5 @@ jobs:
       - uses: anthropics/claude-code-action@47ea5c2a699c59955750d39be0a9ba04bbe9dfb9 # v0.0.15
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_tools: "Bash(bun run lint:*),Bash(bun run format:*),Bash(bun run typecheck:*),Bash(bun run build:*),Bash(bun test:*),Bash(zizmor:*),Bash(actionlint:*),Bash(ghalint run:*),Bash(git rebase:*),Bash(pinact:*)"
+          allowed_tools: "Bash(bun install:*),Bash(bun run lint:*),Bash(bun run format:*),Bash(bun run typecheck:*),Bash(bun run build:*),Bash(bun test:*),Bash(zizmor:*),Bash(actionlint:*),Bash(ghalint run:*),Bash(git rebase:*),Bash(pinact:*)"
 
