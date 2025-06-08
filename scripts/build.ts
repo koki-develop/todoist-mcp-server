@@ -11,3 +11,6 @@ await Bun.build({
   packages: "external",
   banner: "#!/usr/bin/env node",
 });
+
+// Make the output file executable
+await $`chmod +x dist/index.js`;
