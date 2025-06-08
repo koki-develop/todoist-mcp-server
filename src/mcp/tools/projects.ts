@@ -43,7 +43,7 @@ export function registerProjectTools(server: McpServer, client: TodoistClient) {
   // Create a new project
   server.tool(
     "create_project",
-    "Create a new Todoist project",
+    "Create a new Todoist project with customizable settings. Allows you to set up a project with specific name, hierarchy (by assigning a parent), visual customization (color), organizational preferences (favorite status), and view style (list, board, or calendar). Returns the complete project object with all metadata upon successful creation.",
     createProjectSchema,
     async ({ name, parentId, color, isFavorite, viewStyle }) => {
       const project = await client.createProject({
@@ -72,7 +72,7 @@ export function registerProjectTools(server: McpServer, client: TodoistClient) {
   // Update an existing project
   server.tool(
     "update_project",
-    "Update an existing Todoist project",
+    "Modify the properties of an existing Todoist project. Allows you to change the project's name, color scheme, favorite status, and view style preferences. All parameters except the project ID are optional, so you can update only the specific properties you want to change. Returns the updated project object with all current metadata.",
     updateProjectSchema,
     async ({ id, name, color, isFavorite, viewStyle }) => {
       const project = await client.updateProject(id, {
@@ -100,7 +100,7 @@ export function registerProjectTools(server: McpServer, client: TodoistClient) {
   // Delete a project
   server.tool(
     "delete_project",
-    "Delete a Todoist project",
+    "Permanently delete a Todoist project by its unique identifier. This action will remove the project and all associated tasks, sections, and comments. This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
     deleteProjectSchema,
     async ({ id }) => {
       const success = await client.deleteProject(id);
