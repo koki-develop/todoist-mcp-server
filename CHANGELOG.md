@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/koki-develop/todoist-mcp-server/compare/v0.0.2...v0.0.3) (2025-06-08)
+
+
+### Bug Fixes
+
+* add multi-platform Docker support for ARM64 and AMD64 ([#10](https://github.com/koki-develop/todoist-mcp-server/issues/10)) ([f90071b](https://github.com/koki-develop/todoist-mcp-server/commit/f90071bfe7a3b7155858fb0de3645585529836d0))
+
 ## 0.0.2 (2025-06-08)
 
 
