@@ -15,8 +15,12 @@ mise install      # Install required tool versions (Bun, Node.js, linting tools)
 
 # Build and run
 bun run build     # Build the MCP server to dist/index.js
-node dist/index.js # Run the built MCP server
+bun dist/index.js # Run the built MCP server
 # or for development: bun run src/index.ts
+
+# Docker
+docker build -t todoist-mcp-server .  # Build Docker image
+docker run -e TODOIST_API_TOKEN=token todoist-mcp-server  # Run in container
 
 # Testing
 bun test          # Run all tests
@@ -59,7 +63,8 @@ src/              # Source code
         └── client.spec.ts # Comprehensive test suite
 scripts/          # Build and utility scripts
 ├── build.ts      # Bun.build configuration
-dist/             # Built output (executable with shebang)
+dist/             # Built output (Bun runtime compatible)
+Dockerfile        # Multi-stage Docker build with Bun
 ```
 
 ## Architecture
@@ -93,14 +98,14 @@ dist/             # Built output (executable with shebang)
 ## Development Tooling
 
 **Tool Version Management**: Uses `mise.toml` for reproducible environments
-- Bun 1.2.15 for development and package management  
-- Node.js 22.16.0 for production runtime
+- Bun 1.2.15 for development, build, and runtime
+- Node.js 22.16.0 (referenced but project uses Bun runtime)
 - Rust 1.87.0 for cargo-based tools
 - GitHub Actions linting tools: actionlint, ghalint (via aqua), zizmor (via cargo)
 
 **Build System**: Custom Bun.build configuration in `scripts/build.ts`
-- Targets Node.js runtime with external packages
-- Adds executable shebang to output
+- Targets Bun runtime with external packages
+- No shebang for Docker compatibility
 - Automatically sets executable permissions via `chmod +x dist/index.js`
 - Cleans and rebuilds to `dist/` directory
 
@@ -133,6 +138,12 @@ dist/             # Built output (executable with shebang)
 - Add comprehensive `.describe()` annotations for all parameters for better UX
 - Include detailed tool descriptions explaining functionality, parameters, and safety warnings
 - Return structured responses with both success messages and complete object data
+
+**Docker Support**: Multi-stage Dockerfile for efficient containerization:
+- Uses official `oven/bun:1.2.15` image for all stages
+- Separates dev/prod dependencies for optimal layer caching
+- Runs as non-root `bun` user for security
+- Requires `TODOIST_API_TOKEN` environment variable
 
 **Extension Strategy**: New features should follow the pattern:
 - Add new files to `src/mcp/resources/` or `src/mcp/tools/` 
