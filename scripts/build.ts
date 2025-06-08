@@ -7,9 +7,8 @@ await $`rm -rf dist`;
 await Bun.build({
   entrypoints: ["./src/index.ts"],
   outdir: "./dist",
-  target: "node",
+  target: "bun",
   packages: "external",
-  banner: "#!/usr/bin/env node",
 });
 
 // Make the output file executable

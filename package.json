@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky || true",
     "build": "bun run scripts/build.ts",
     "lint": "biome check .",
     "format": "biome check --write .",
