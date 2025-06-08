@@ -172,6 +172,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - Restricted to repository owner only for security
 - Uses anthropic_api_key from GitHub secrets
 - Automatically handles code changes, commits, and PR interactions
+- **Tool Permissions**: Configured with `allowed_tools` for development commands (bun run lint/format/typecheck/build, bun test), GitHub Actions linters (actionlint, ghalint, zizmor), git operations (git rebase), and dependency management (pinact)
 
 **Extension Strategy**: New features should follow the pattern:
 - Add new files to `src/mcp/resources/` or `src/mcp/tools/` 
