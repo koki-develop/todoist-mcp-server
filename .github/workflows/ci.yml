@@ -52,5 +52,23 @@ jobs:
         env:
           TODOIST_API_TOKEN: test
         run: |
-          timeout 5s node dist/index.js || test $? = 124
+          timeout 5s bun dist/index.js || test $? = 124
           echo "✓ Server starts successfully"
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Build Docker image
+        run: docker build -t todoist-mcp-server .
+      - name: Test Docker container
+        env:
+          TODOIST_API_TOKEN: test
+        run: |
+          timeout 5s docker run --rm -e TODOIST_API_TOKEN="$TODOIST_API_TOKEN" todoist-mcp-server || test $? = 124
+          echo "✓ Docker container starts successfully"
