@@ -39,6 +39,9 @@ actionlint        # Lint GitHub Actions workflow files
 ghalint run       # Check GitHub Actions policies
 zizmor . --persona=auditor  # Security audit GitHub Actions
 
+# Action version management
+pinact run -u     # Update GitHub Actions to latest versions
+
 # Development workflow
 bun run prepare   # Install git hooks (runs automatically on install)
 ```
@@ -147,12 +150,13 @@ Dockerfile        # Multi-stage Docker build with Bun
 - Return structured responses with both success messages and complete object data
 
 **Docker Support**: Multi-stage Dockerfile for efficient containerization:
-- Uses official `oven/bun:1.2.15` image for all stages
+- Uses official `oven/bun:1.2.15` image for all stages (supports both amd64 and arm64)
 - Separates dev/prod dependencies for optimal layer caching
 - Runs as non-root `bun` user for security
 - Requires `TODOIST_API_TOKEN` environment variable
 - OCI source label for GitHub Container Registry integration
 - Automated publishing to `ghcr.io/koki-develop/todoist-mcp-server` on releases
+- Multi-platform support via docker/setup-qemu-action for ARM64 emulation
 
 **Automated Releases**: Fully automated release workflow using release-please:
 - **Trigger**: Conventional commits pushed to main branch
@@ -160,7 +164,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Versioning**: Semantic versioning based on commit types (`feat:`, `fix:`, `BREAKING CHANGE:`)
 - **Docker Publishing**: Automatic image builds and publishing to GHCR with version tags
 - **Security**: Uses GitHub token authentication with minimal permissions
-- **Platform**: Single platform (linux/amd64) for efficiency
+- **Multi-Platform**: Supports both linux/amd64 and linux/arm64 architectures using QEMU emulation
 
 **Claude Code Integration**: Repository includes GitHub Actions workflow for Claude Code integration:
 - Triggered by @claude mentions in issues, PR comments, and reviews
