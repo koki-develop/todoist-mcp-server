@@ -64,8 +64,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - name: Build Docker image
-        run: docker build -t todoist-mcp-server .
+      - run: docker build -t todoist-mcp-server .
       - name: Test Docker container
         env:
           TODOIST_API_TOKEN: test
