@@ -49,6 +49,8 @@ jobs:
       - uses: ./.github/actions/setup
       - run: bun run build
       - name: Test built executable
+        env:
+          TODOIST_API_TOKEN: test
         run: |
           timeout 5s node dist/index.js || test $? = 124
           echo "✓ Server starts successfully"

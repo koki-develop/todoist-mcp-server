@@ -13,23 +13,37 @@ export function registerProjectResources(
   client: TodoistClient,
 ) {
   // Add projects list resource
-  server.resource("projects", "todoist://projects", async (uri) => {
-    const projects = await client.getProjects();
-    return {
-      contents: [
-        {
-          uri: uri.href,
-          mimeType: "application/json",
-          text: JSON.stringify(projects, null, 2),
-        },
-      ],
-    };
-  });
+  server.resource(
+    "projects",
+    "todoist://projects",
+    {
+      description:
+        "Retrieve all Todoist projects accessible to the authenticated user. Returns a comprehensive list of projects including personal and workspace projects with their metadata such as name, color, favorite status, view style, and hierarchy information.",
+    },
+    async (uri) => {
+      const projects = await client.getProjects();
+      return {
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "application/json",
+            text: JSON.stringify(projects, null, 2),
+          },
+        ],
+      };
+    },
+  );
 
   // Add individual project resource
   server.resource(
     "project",
-    new ResourceTemplate("todoist://projects/{id}", { list: undefined }),
+    new ResourceTemplate("todoist://projects/{id}", {
+      list: undefined,
+    }),
+    {
+      description:
+        "Access detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.",
+    },
     async (uri, { id }) => {
       const projectId = projectIdSchema.parse(id);
       const project = await client.getProject(projectId);
