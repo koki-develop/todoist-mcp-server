@@ -123,6 +123,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 **CI/CD**: Comprehensive GitHub Actions workflows
 - **ci.yml**: lint, test, build (with Bun executable test), and Docker container testing
 - **actions-lint.yml**: GitHub Actions workflow validation (actionlint, ghalint, zizmor)
+- **release.yml**: Automated release workflow with release-please and Docker publishing to GHCR
 - **claude.yml**: Claude Code integration workflow triggered by @claude mentions (repository owner only)
 - All jobs use pinned action versions (managed with pinact) and minimal permissions
 
@@ -150,6 +151,16 @@ Dockerfile        # Multi-stage Docker build with Bun
 - Separates dev/prod dependencies for optimal layer caching
 - Runs as non-root `bun` user for security
 - Requires `TODOIST_API_TOKEN` environment variable
+- OCI source label for GitHub Container Registry integration
+- Automated publishing to `ghcr.io/koki-develop/todoist-mcp-server` on releases
+
+**Automated Releases**: Fully automated release workflow using release-please:
+- **Trigger**: Conventional commits pushed to main branch
+- **Process**: Creates release PRs automatically, then publishes releases when merged
+- **Versioning**: Semantic versioning based on commit types (`feat:`, `fix:`, `BREAKING CHANGE:`)
+- **Docker Publishing**: Automatic image builds and publishing to GHCR with version tags
+- **Security**: Uses GitHub token authentication with minimal permissions
+- **Platform**: Single platform (linux/amd64) for efficiency
 
 **Claude Code Integration**: Repository includes GitHub Actions workflow for Claude Code integration:
 - Triggered by @claude mentions in issues, PR comments, and reviews
