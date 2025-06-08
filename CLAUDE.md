@@ -29,6 +29,7 @@ bun test src/lib/todoist/client.spec.ts  # Run specific test file
 # Code quality
 bun run lint      # Check code with Biome
 bun run format    # Format and fix code with Biome
+bun run typecheck # Run TypeScript type checking
 
 # MCP Server Testing
 bun run inspector # Build and launch MCP Inspector for visual testing
@@ -124,7 +125,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 
 **CI/CD**: Comprehensive GitHub Actions workflows
-- **ci.yml**: lint, test, build (with Bun executable test), and Docker container testing
+- **ci.yml**: lint, typecheck, test, build (with Bun executable test), and Docker container testing
 - **actions-lint.yml**: GitHub Actions workflow validation (actionlint, ghalint, zizmor)
 - **release.yml**: Automated release workflow with release-please and Docker publishing to GHCR
 - **claude.yml**: Claude Code integration workflow triggered by @claude mentions (repository owner only)
