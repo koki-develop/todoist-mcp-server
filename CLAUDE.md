@@ -123,6 +123,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 **CI/CD**: Comprehensive GitHub Actions workflows
 - **ci.yml**: lint, test, build (with Bun executable test), and Docker container testing
 - **actions-lint.yml**: GitHub Actions workflow validation (actionlint, ghalint, zizmor)
+- **claude.yml**: Claude Code integration workflow triggered by @claude mentions (repository owner only)
 - All jobs use pinned action versions (managed with pinact) and minimal permissions
 
 **TypeScript**: Configured for modern features with strict checking
@@ -149,6 +150,12 @@ Dockerfile        # Multi-stage Docker build with Bun
 - Separates dev/prod dependencies for optimal layer caching
 - Runs as non-root `bun` user for security
 - Requires `TODOIST_API_TOKEN` environment variable
+
+**Claude Code Integration**: Repository includes GitHub Actions workflow for Claude Code integration:
+- Triggered by @claude mentions in issues, PR comments, and reviews
+- Restricted to repository owner only for security
+- Uses anthropic_api_key from GitHub secrets
+- Automatically handles code changes, commits, and PR interactions
 
 **Extension Strategy**: New features should follow the pattern:
 - Add new files to `src/mcp/resources/` or `src/mcp/tools/` 
