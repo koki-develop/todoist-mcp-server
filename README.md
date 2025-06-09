@@ -1,7 +1,7 @@
 # Todoist MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.0.3-blue.svg)](https://github.com/koki-develop/todoist-mcp-server)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![Version](https://img.shields.io/github/v/release/koki-develop/todoist-mcp-server)](https://github.com/koki-develop/todoist-mcp-server/releases/latest)
+[![License](https://img.shields.io/github/license/koki-develop/todoist-mcp-server)](./LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue.svg)](https://github.com/koki-develop/todoist-mcp-server/pkgs/container/todoist-mcp-server)
 
 A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects, allowing you to manage tasks and projects through natural language conversations.
@@ -16,14 +16,6 @@ Before using this MCP server, you'll need a **Todoist API token**:
 2. Copy your API token
 
 ## Usage
-
-### Docker (Recommended)
-
-Run the MCP server using Docker from GitHub Container Registry:
-
-```bash
-docker run -e TODOIST_API_TOKEN=<your_api_token_here> ghcr.io/koki-develop/todoist-mcp-server:latest
-```
 
 ### MCP Client Configuration
 
