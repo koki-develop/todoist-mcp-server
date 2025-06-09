@@ -291,7 +291,7 @@ describe("TodoistClient", () => {
         projectId: "2",
       });
 
-      mockTodoistApi.getTasks.mockResolvedValueOnce([mockTask1, mockTask2]);
+      mockTodoistApi.getTasks.mockResolvedValueOnce({ results: [mockTask1, mockTask2] });
 
       const tasks = await client.getTasks();
 
@@ -311,7 +311,7 @@ describe("TodoistClient", () => {
         filter: "today",
       };
 
-      mockTodoistApi.getTasks.mockResolvedValueOnce([mockTask]);
+      mockTodoistApi.getTasks.mockResolvedValueOnce({ results: [mockTask] });
 
       const tasks = await client.getTasks(params);
 
