@@ -60,8 +60,16 @@ export class TodoistClient {
   }
 
   async getTasks(params?: GetTasksParams): Promise<Task[]> {
-    const response = await this._api.getTasks(params);
-    return response.results;
+    const tasks: Task[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getTasks({ ...params, cursor });
+      tasks.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return tasks;
   }
 
   async getTask(id: string): Promise<Task> {

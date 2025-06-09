@@ -293,12 +293,13 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.getTasks.mockResolvedValueOnce({
         results: [mockTask1, mockTask2],
+        nextCursor: null,
       });
 
       const tasks = await client.getTasks();
 
       expect(tasks).toEqual([mockTask1, mockTask2]);
-      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith(undefined);
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith({ cursor: null });
     });
 
     test("should return filtered tasks", async () => {
@@ -313,12 +314,47 @@ describe("TodoistClient", () => {
         filter: "today",
       };
 
-      mockTodoistApi.getTasks.mockResolvedValueOnce({ results: [mockTask] });
+      mockTodoistApi.getTasks.mockResolvedValueOnce({
+        results: [mockTask],
+        nextCursor: null,
+      });
 
       const tasks = await client.getTasks(params);
 
       expect(tasks).toEqual([mockTask]);
-      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith(params);
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith({
+        ...params,
+        cursor: null,
+      });
+    });
+
+    test("should handle pagination and return all tasks from multiple pages", async () => {
+      const mockTask1 = createMockTask({ id: "1", content: "Task 1" });
+      const mockTask2 = createMockTask({ id: "2", content: "Task 2" });
+      const mockTask3 = createMockTask({ id: "3", content: "Task 3" });
+
+      // Mock first page response
+      mockTodoistApi.getTasks.mockResolvedValueOnce({
+        results: [mockTask1, mockTask2],
+        nextCursor: "cursor123",
+      });
+
+      // Mock second page response
+      mockTodoistApi.getTasks.mockResolvedValueOnce({
+        results: [mockTask3],
+        nextCursor: null,
+      });
+
+      const tasks = await client.getTasks();
+
+      expect(tasks).toEqual([mockTask1, mockTask2, mockTask3]);
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getTasks).toHaveBeenNthCalledWith(1, {
+        cursor: null,
+      });
+      expect(mockTodoistApi.getTasks).toHaveBeenNthCalledWith(2, {
+        cursor: "cursor123",
+      });
     });
   });
 
