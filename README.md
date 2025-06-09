@@ -12,10 +12,8 @@ The Todoist MCP server provides a bridge between AI assistants and your Todoist 
 
 Before using this MCP server, you'll need a **Todoist API token**:
 
-1. Go to [Todoist Integrations Settings](https://todoist.com/app/settings/integrations)
-2. You can directly access the Developer section at the following URL:
-   - https://app.todoist.com/app/settings/integrations/developer
-3. Copy your API token
+1. Go to [Todoist Developer Settings](https://app.todoist.com/app/settings/integrations/developer)
+2. Copy your API token
 
 ## Usage
 
