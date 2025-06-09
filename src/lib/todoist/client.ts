@@ -1,8 +1,12 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
   CreateProjectParams,
+  CreateTaskParams,
+  GetTasksParams,
   Project,
+  Task,
   UpdateProjectParams,
+  UpdateTaskParams,
 } from "./types";
 
 export class TodoistClient {
@@ -53,5 +57,61 @@ export class TodoistClient {
 
   async deleteProject(id: string): Promise<boolean> {
     return this._api.deleteProject(id);
+  }
+
+  async getTasks(params?: GetTasksParams): Promise<Task[]> {
+    const tasks: Task[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getTasks({ ...params, cursor });
+      tasks.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return tasks;
+  }
+
+  async getTask(id: string): Promise<Task> {
+    return this._api.getTask(id);
+  }
+
+  async createTask(params: CreateTaskParams): Promise<Task> {
+    // Convert our params to match API requirements
+    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
+    const apiParams = { ...params } as any;
+    // API requires either dueDate OR dueDatetime, not both
+    if (apiParams.dueDate && apiParams.dueDatetime) {
+      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
+    }
+    // Map childOrder to order for API
+    if (apiParams.childOrder !== undefined) {
+      apiParams.order = apiParams.childOrder;
+      apiParams.childOrder = undefined;
+    }
+    return this._api.addTask(apiParams);
+  }
+
+  async updateTask(id: string, params: UpdateTaskParams): Promise<Task> {
+    // Convert our params to match API requirements
+    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
+    const apiParams = { ...params } as any;
+    // API requires either dueDate OR dueDatetime, not both
+    if (apiParams.dueDate && apiParams.dueDatetime) {
+      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
+    }
+    return this._api.updateTask(id, apiParams);
+  }
+
+  async deleteTask(id: string): Promise<boolean> {
+    return this._api.deleteTask(id);
+  }
+
+  async closeTask(id: string): Promise<boolean> {
+    return this._api.closeTask(id);
+  }
+
+  async reopenTask(id: string): Promise<boolean> {
+    return this._api.reopenTask(id);
   }
 }

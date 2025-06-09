@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/github/license/koki-develop/todoist-mcp-server)](./LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue.svg)](https://github.com/koki-develop/todoist-mcp-server/pkgs/container/todoist-mcp-server)
 
-A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects, allowing you to manage tasks and projects through natural language conversations.
+A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects and tasks, allowing you to manage your entire productivity workflow through natural language conversations.
 
-The Todoist MCP server provides a bridge between AI assistants and your Todoist workspace, enabling seamless project management through conversational interfaces.
+The Todoist MCP server provides a bridge between AI assistants and your Todoist workspace, enabling seamless project and task management through conversational interfaces.
 
 ## Prerequisites
 
@@ -51,6 +51,12 @@ Lists all Todoist projects accessible to the authenticated user. Returns compreh
 #### `todoist://projects/{id}`
 Accesses detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.
 
+#### `todoist://tasks`
+Lists all Todoist tasks accessible to the authenticated user. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Supports automatic pagination to retrieve all tasks.
+
+#### `todoist://tasks/{id}`
+Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.
+
 ### MCP Tools
 
 The server provides the following tools that AI assistants can use to modify your Todoist data:
@@ -74,6 +80,51 @@ Modifies the properties of an existing Todoist project. Allows you to change:
 #### `delete_project`
 Permanently deletes a Todoist project by its unique identifier. This action removes the project and all associated tasks, sections, and comments. **This operation cannot be undone.**
 - **id** (required): ID of the project to delete
+
+#### `create_task`
+Creates a new Todoist task with comprehensive configuration options. Allows you to set up a task with:
+- **content** (required): Task content/title
+- **description** (optional): Detailed task description
+- **projectId** (optional): ID of the project to add the task to
+- **sectionId** (optional): ID of the section within the project
+- **parentId** (optional): ID of parent task for creating subtasks
+- **childOrder** (optional): Position in project/parent task
+- **labels** (optional): Array of label names to assign
+- **priority** (optional): Priority level (1=normal, 2=high, 3=very high, 4=urgent)
+- **dueString** (optional): Natural language due date like 'tomorrow', 'next Monday at 2pm'
+- **dueDate** (optional): Due date in YYYY-MM-DD format
+- **dueDatetime** (optional): Due datetime in RFC 3339 format
+- **dueLang** (optional): Language for natural language due date parsing
+- **assigneeId** (optional): ID of user to assign task to
+- **duration** (optional): Task duration amount
+- **durationUnit** (optional): Duration unit (minute or day)
+
+#### `update_task`
+Modifies the properties of an existing Todoist task. Allows you to change:
+- **id** (required): ID of the task to update
+- **content** (optional): New task content/title
+- **description** (optional): New task description
+- **labels** (optional): New array of label names
+- **priority** (optional): New priority level (1=normal, 2=high, 3=very high, 4=urgent)
+- **dueString** (optional): New natural language due date
+- **dueDate** (optional): New due date in YYYY-MM-DD format
+- **dueDatetime** (optional): New due datetime in RFC 3339 format
+- **dueLang** (optional): Language for natural language due date parsing
+- **assigneeId** (optional): New assignee user ID
+- **duration** (optional): New task duration amount
+- **durationUnit** (optional): New duration unit
+
+#### `delete_task`
+Permanently deletes a Todoist task by its unique identifier. This action removes the task and all associated comments and attachments. If the task has subtasks, they will also be deleted. **This operation cannot be undone.**
+- **id** (required): ID of the task to delete
+
+#### `close_task`
+Marks a Todoist task as completed. This action moves the task to the completed state while preserving all task data and history. Completed tasks can be reopened later if needed.
+- **id** (required): ID of the task to mark as completed
+
+#### `reopen_task`
+Reopens a previously completed Todoist task, returning it to active status. This action restores the task to its previous state before completion.
+- **id** (required): ID of the completed task to reopen
 
 ## License
 
