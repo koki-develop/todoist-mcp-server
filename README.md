@@ -13,7 +13,8 @@ The Todoist MCP server provides a bridge between AI assistants and your Todoist 
 Before using this MCP server, you'll need a **Todoist API token**:
 
 1. Go to [Todoist Integrations Settings](https://todoist.com/app/settings/integrations)
-2. Scroll down to "Developer" section
+2. You can directly access the Developer section at the following URL:
+   - https://app.todoist.com/app/settings/integrations/developer
 3. Copy your API token
 
 ## Usage
@@ -23,7 +24,7 @@ Before using this MCP server, you'll need a **Todoist API token**:
 Run the MCP server using Docker from GitHub Container Registry:
 
 ```bash
-docker run -e TODOIST_API_TOKEN=your_api_token_here ghcr.io/koki-develop/todoist-mcp-server:latest
+docker run -e TODOIST_API_TOKEN=<your_api_token_here> ghcr.io/koki-develop/todoist-mcp-server:latest
 ```
 
 ### MCP Client Configuration
@@ -40,7 +41,7 @@ To use this server with an MCP client, add the following configuration:
         "-i",
         "--rm",
         "-e",
-        "TODOIST_API_TOKEN=your_api_token_here",
+        "TODOIST_API_TOKEN=<your_api_token_here>",
         "ghcr.io/koki-develop/todoist-mcp-server:latest"
       ]
     }
@@ -48,7 +49,7 @@ To use this server with an MCP client, add the following configuration:
 }
 ```
 
-Replace `your_api_token_here` with your actual Todoist API token.
+Replace `<your_api_token_here>` with your actual Todoist API token.
 
 ## Available Features
 
