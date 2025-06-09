@@ -17,8 +17,6 @@ Before using this MCP server, you'll need a **Todoist API token**:
 
 ## Usage
 
-### MCP Client Configuration
-
 To use this server with an MCP client, add the following configuration:
 
 ```json
