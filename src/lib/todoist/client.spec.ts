@@ -291,7 +291,9 @@ describe("TodoistClient", () => {
         projectId: "2",
       });
 
-      mockTodoistApi.getTasks.mockResolvedValueOnce({ results: [mockTask1, mockTask2] });
+      mockTodoistApi.getTasks.mockResolvedValueOnce({
+        results: [mockTask1, mockTask2],
+      });
 
       const tasks = await client.getTasks();
 
