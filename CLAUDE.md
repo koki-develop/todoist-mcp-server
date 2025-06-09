@@ -54,14 +54,10 @@ src/              # Source code
 ├── index.ts      # Minimal entry point (delegates to server.ts)
 ├── server.ts     # MCP server initialization and configuration
 ├── mcp/          # Modular MCP architecture with colocation
-│   ├── resources/ # Resource handlers with co-located schemas
-│   │   ├── index.ts      # registerResources() aggregator
-│   │   ├── projects.ts   # Project resources + Zod schemas
-│   │   └── tasks.ts      # Task resources + Zod schemas
 │   └── tools/     # Tool handlers with co-located schemas  
 │       ├── index.ts      # registerTools() aggregator
-│       ├── projects.ts   # Project management tools (create, update, delete)
-│       └── tasks.ts      # Task management tools (CRUD + close/reopen)
+│       ├── projects.ts   # Project tools (CRUD + read operations)
+│       └── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -75,17 +71,17 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 ## Architecture
 
-**Modular MCP Architecture**: The project uses a colocation pattern for better maintainability:
+**Tools-Only MCP Architecture**: The project uses a colocation pattern for better maintainability:
 
 - **Entry Point**: `src/index.ts` is minimal and delegates to `src/server.ts`
-- **Server Initialization**: `src/server.ts` handles McpServer setup, environment variables, and component registration
-- **Resource/Tool Registration**: Modular functions (`registerResources`, `registerTools`) aggregate feature-specific handlers
-- **Colocation Principle**: Schemas are co-located with their usage in resource/tool files rather than centralized
+- **Server Initialization**: `src/server.ts` handles McpServer setup, environment variables, and tool registration
+- **Tool Registration**: Modular function (`registerTools`) aggregates feature-specific handlers
+- **Colocation Principle**: Schemas are co-located with their usage in tool files rather than centralized
 
 **MCP Server Structure**: Uses `McpServer` (high-level API) from `@modelcontextprotocol/sdk` instead of low-level `Server` class:
 
-- **Automatic Capability Detection**: Server capabilities inferred from registered resources/tools
-- **Simplified Registration**: `.resource()` and `.tool()` methods vs manual request handlers
+- **Automatic Capability Detection**: Server capabilities inferred from registered tools
+- **Simplified Registration**: `.tool()` methods vs manual request handlers
 - **Zod Integration**: Direct Zod schema usage for type-safe parameter validation
 - **Error Handling**: Framework handles McpError conversion automatically
 
@@ -96,8 +92,9 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Resources**: Complete implementation of projects (`todoist://projects`, `todoist://projects/{id}`) and tasks (`todoist://tasks`, `todoist://tasks/{id}`)
-- **Tools**: Full project management (create, update, delete) and task management (create, update, delete, close, reopen) operations
+- **Tools**: Complete tools-only implementation with both read and write operations:
+  - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
+  - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
 - **Architecture**: Extensible structure for adding sections, labels, comments features
 
@@ -146,7 +143,11 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Environment Variables**: `TODOIST_API_TOKEN` is required for server operation. The server validates this on startup and exits with error if missing.
 
-**Colocation Pattern**: Schemas are defined within the same file as their usage (resources/tools) rather than centralized, improving maintainability and reducing coupling.
+**Tools-Only Architecture Migration**: The project migrated from a mixed resources/tools approach to tools-only for better client compatibility. Many MCP clients have limited or no support for MCP resources, and resources cannot accept complex parameters for filtering. All previous resource functionality is now available through tools with enhanced capabilities:
+- `get_projects` and `get_project` replace the previous `todoist://projects` resources
+- `get_tasks` and `get_task` replace the previous `todoist://tasks` resources with added filtering options
+
+**Colocation Pattern**: Schemas are defined within the same file as their usage (tools) rather than centralized, improving maintainability and reducing coupling.
 
 **MCP Tool Development Pattern**: For server.tool() implementations:
 - Use `ZodRawShape` (object with Zod schemas) instead of `ZodObject` for parameter schemas
@@ -184,10 +185,10 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Tool Permissions**: Configured with `allowed_tools` for development commands (bun run lint/format/typecheck/build, bun test), GitHub Actions linters (actionlint, ghalint, zizmor), git operations (git rebase), and dependency management (pinact)
 
 **Extension Strategy**: New features should follow the pattern:
-- Add new files to `src/mcp/resources/` or `src/mcp/tools/` 
+- Add new files to `src/mcp/tools/` 
 - Co-locate Zod schemas with their usage
-- Register in respective `index.ts` aggregators
-- Use `ResourceTemplate` for parameterized resources with proper description metadata
+- Register in `src/mcp/tools/index.ts` aggregator
+- Follow existing tool patterns for consistent API design
 
 **Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling/dependency changes separately from feature implementation. Prefer `chore:` for skeleton implementations that don't yet provide user-facing functionality.
 
