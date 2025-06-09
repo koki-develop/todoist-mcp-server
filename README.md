@@ -41,25 +41,29 @@ Replace `<your_api_token_here>` with your actual Todoist API token.
 
 ## Available Features
 
-### MCP Resources
-
-The server provides the following resources that can be read by AI assistants:
-
-#### `todoist://projects`
-Lists all Todoist projects accessible to the authenticated user. Returns comprehensive project information including personal and workspace projects with metadata such as name, color, favorite status, view style, and hierarchy information.
-
-#### `todoist://projects/{id}`
-Accesses detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.
-
-#### `todoist://tasks`
-Lists all Todoist tasks accessible to the authenticated user. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Supports automatic pagination to retrieve all tasks.
-
-#### `todoist://tasks/{id}`
-Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.
-
 ### MCP Tools
 
-The server provides the following tools that AI assistants can use to modify your Todoist data:
+The server provides the following tools that AI assistants can use to interact with your Todoist data:
+
+#### `get_projects`
+Retrieves all Todoist projects accessible to the authenticated user. Returns comprehensive project information including personal and workspace projects with metadata such as name, color, favorite status, view style, and hierarchy information.
+
+#### `get_project`
+Accesses detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.
+- **id** (required): ID of the project to retrieve
+
+#### `get_tasks`
+Retrieves Todoist tasks with flexible filtering options. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Without filters, returns all tasks accessible to the authenticated user.
+- **projectId** (optional): Filter tasks by project ID
+- **sectionId** (optional): Filter tasks by section ID
+- **labelId** (optional): Filter tasks by label ID
+- **filter** (optional): Custom filter query in Todoist filter syntax
+- **lang** (optional): Language for filter parsing
+- **ids** (optional): Array of specific task IDs to retrieve
+
+#### `get_task`
+Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.
+- **id** (required): ID of the task to retrieve
 
 #### `create_project`
 Creates a new Todoist project with customizable settings. Allows you to set up a project with:
