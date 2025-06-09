@@ -1,15 +1,82 @@
-# todoist-mcp-server
+# Todoist MCP Server
 
-To install dependencies:
+[![Version](https://img.shields.io/github/v/release/koki-develop/todoist-mcp-server)](https://github.com/koki-develop/todoist-mcp-server/releases/latest)
+[![License](https://img.shields.io/github/license/koki-develop/todoist-mcp-server)](./LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io-blue.svg)](https://github.com/koki-develop/todoist-mcp-server/pkgs/container/todoist-mcp-server)
 
-```bash
-bun install
+A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects, allowing you to manage tasks and projects through natural language conversations.
+
+The Todoist MCP server provides a bridge between AI assistants and your Todoist workspace, enabling seamless project management through conversational interfaces.
+
+## Prerequisites
+
+Before using this MCP server, you'll need a **Todoist API token**:
+
+1. Go to [Todoist Developer Settings](https://app.todoist.com/app/settings/integrations/developer)
+2. Copy your API token
+
+## Usage
+
+To use this server with an MCP client, add the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "todoist": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "TODOIST_API_TOKEN=<your_api_token_here>",
+        "ghcr.io/koki-develop/todoist-mcp-server:latest"
+      ]
+    }
+  }
+}
 ```
 
-To run:
+Replace `<your_api_token_here>` with your actual Todoist API token.
 
-```bash
-bun run index.ts
-```
+## Available Features
 
-This project was created using `bun init` in bun v1.2.12. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### MCP Resources
+
+The server provides the following resources that can be read by AI assistants:
+
+#### `todoist://projects`
+Lists all Todoist projects accessible to the authenticated user. Returns comprehensive project information including personal and workspace projects with metadata such as name, color, favorite status, view style, and hierarchy information.
+
+#### `todoist://projects/{id}`
+Accesses detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.
+
+### MCP Tools
+
+The server provides the following tools that AI assistants can use to modify your Todoist data:
+
+#### `create_project`
+Creates a new Todoist project with customizable settings. Allows you to set up a project with:
+- **name** (required): Name of the project
+- **parentId** (optional): ID of parent project for hierarchy
+- **color** (optional): Color for the project
+- **isFavorite** (optional): Mark project as favorite
+- **viewStyle** (optional): View style (`list`, `board`, or `calendar`)
+
+#### `update_project`
+Modifies the properties of an existing Todoist project. Allows you to change:
+- **id** (required): ID of the project to update
+- **name** (optional): New name for the project
+- **color** (optional): New color for the project
+- **isFavorite** (optional): Update favorite status
+- **viewStyle** (optional): New view style (`list`, `board`, or `calendar`)
+
+#### `delete_project`
+Permanently deletes a Todoist project by its unique identifier. This action removes the project and all associated tasks, sections, and comments. **This operation cannot be undone.**
+- **id** (required): ID of the project to delete
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+Copyright (c) 2025 Koki Sato
