@@ -11,7 +11,7 @@
     "format": "biome check --write .",
     "typecheck": "tsc --noEmit",
     "preinspector": "bun run build",
-    "inspector": "mcp-inspector dist/index.js"
+    "inspector": "mcp-inspector bun run ./dist/index.js"
   },
   "dependencies": {
     "@doist/todoist-api-typescript": "5.0.0",
