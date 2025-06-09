@@ -2,7 +2,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import packageJson from "../package.json" with { type: "json" };
 import { TodoistClient } from "./lib/todoist/client";
-import { registerResources } from "./mcp/resources";
 import { registerTools } from "./mcp/tools";
 
 export async function runServer() {
@@ -22,8 +21,7 @@ export async function runServer() {
     version: packageJson.version,
   });
 
-  // Register resources and tools
-  registerResources(server, todoistClient);
+  // Register tools
   registerTools(server, todoistClient);
 
   // Start server

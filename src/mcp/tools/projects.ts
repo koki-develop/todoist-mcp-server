@@ -39,6 +39,12 @@ const deleteProjectSchema = {
   id: z.string().min(1).describe("ID of the project to delete"),
 };
 
+const getProjectsSchema = {};
+
+const getProjectSchema = {
+  id: z.string().min(1).describe("ID of the project to retrieve"),
+};
+
 export function registerProjectTools(server: McpServer, client: TodoistClient) {
   // Create a new project
   server.tool(
@@ -112,6 +118,52 @@ export function registerProjectTools(server: McpServer, client: TodoistClient) {
             text: success
               ? `Project (ID: ${id}) deleted successfully`
               : `Failed to delete project (ID: ${id})`,
+          },
+        ],
+      };
+    },
+  );
+
+  // Get all projects
+  server.tool(
+    "get_projects",
+    "Retrieve all Todoist projects accessible to the authenticated user. Returns a comprehensive list of projects including personal and workspace projects with their metadata such as name, color, favorite status, view style, and hierarchy information.",
+    getProjectsSchema,
+    async () => {
+      const projects = await client.getProjects();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved ${projects.length} project(s)`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(projects, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Get a single project by ID
+  server.tool(
+    "get_project",
+    "Access detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.",
+    getProjectSchema,
+    async ({ id }) => {
+      const project = await client.getProject(id);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved project "${project.name}" (ID: ${project.id})`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(project, null, 2),
           },
         ],
       };

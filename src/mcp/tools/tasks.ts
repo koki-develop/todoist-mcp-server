@@ -128,6 +128,37 @@ const reopenTaskSchema = {
   id: z.string().min(1).describe("ID of the completed task to reopen"),
 };
 
+const getTasksSchema = {
+  projectId: z
+    .string()
+    .optional()
+    .describe("Filter tasks by project ID (optional)"),
+  sectionId: z
+    .string()
+    .optional()
+    .describe("Filter tasks by section ID (optional)"),
+  labelId: z
+    .string()
+    .optional()
+    .describe("Filter tasks by label ID (optional)"),
+  filter: z
+    .string()
+    .optional()
+    .describe("Custom filter query in Todoist filter syntax (optional)"),
+  lang: z
+    .string()
+    .optional()
+    .describe("Language for filter parsing (optional)"),
+  ids: z
+    .array(z.string())
+    .optional()
+    .describe("Array of specific task IDs to retrieve (optional)"),
+};
+
+const getTaskSchema = {
+  id: z.string().min(1).describe("ID of the task to retrieve"),
+};
+
 export function registerTaskTools(server: McpServer, client: TodoistClient) {
   // Create a new task
   server.tool(
@@ -303,6 +334,59 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: `Failed to reopen task with ID: ${id}`,
+          },
+        ],
+      };
+    },
+  );
+
+  // Get tasks with optional filtering
+  server.tool(
+    "get_tasks",
+    "Retrieve Todoist tasks with flexible filtering options. Can filter by project, section, labels, or use custom Todoist filter queries. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Without filters, returns all tasks accessible to the authenticated user.",
+    getTasksSchema,
+    async ({ projectId, sectionId, labelId, filter, lang, ids }) => {
+      const tasks = await client.getTasks({
+        projectId,
+        sectionId,
+        labelId,
+        filter,
+        lang,
+        ids,
+      });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved ${tasks.length} task(s)`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(tasks, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Get a single task by ID
+  server.tool(
+    "get_task",
+    "Access detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, comments count, and timestamps for creation and last modification.",
+    getTaskSchema,
+    async ({ id }) => {
+      const task = await client.getTask(id);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved task "${task.content}" (ID: ${task.id})`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(task, null, 2),
           },
         ],
       };
