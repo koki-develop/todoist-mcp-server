@@ -1,11 +1,12 @@
 import type {
   PersonalProject,
+  Section,
   Task,
   WorkspaceProject,
 } from "@doist/todoist-api-typescript";
 
 export type Project = PersonalProject | WorkspaceProject;
-export type { Task };
+export type { Task, Section };
 
 export interface CreateProjectParams {
   name: string;
@@ -61,4 +62,18 @@ export interface UpdateTaskParams {
   assigneeId?: string;
   duration?: number;
   durationUnit?: "minute" | "day";
+}
+
+export interface GetSectionsParams {
+  projectId: string;
+}
+
+export interface CreateSectionParams {
+  name: string;
+  projectId: string;
+  order?: number;
+}
+
+export interface UpdateSectionParams {
+  name: string;
 }
