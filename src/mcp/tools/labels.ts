@@ -20,6 +20,25 @@ const createLabelSchema = {
     .describe("Mark label as favorite (optional)"),
 };
 
+const updateLabelSchema = {
+  id: z.string().min(1).describe("ID of the label to update"),
+  name: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("New name for the label (optional)"),
+  color: z
+    .string()
+    .optional()
+    .describe("New color code or key for the label (optional)"),
+  order: z
+    .number()
+    .nullable()
+    .optional()
+    .describe("New display order position (optional)"),
+  isFavorite: z.boolean().optional().describe("New favorite status (optional)"),
+};
+
 const getLabelsSchema = {};
 
 const deleteLabelSchema = {
@@ -48,6 +67,34 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: `Label "${label.name}" created successfully with ID: ${label.id}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(label, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Update an existing label
+  server.tool(
+    "update_label",
+    "Modify the properties of an existing personal label. Allows you to change the label's name, color, display order, and favorite status. All parameters except the label ID are optional, so you can update only the specific properties you want to change. Returns the updated label object with all current metadata.",
+    updateLabelSchema,
+    async ({ id, name, color, order, isFavorite }) => {
+      const label = await client.updateLabel(id, {
+        name,
+        color,
+        order,
+        isFavorite,
+      });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Label "${label.name}" (ID: ${label.id}) updated successfully`,
           },
           {
             type: "text",
