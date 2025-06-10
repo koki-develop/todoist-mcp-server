@@ -76,6 +76,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`reopen_task`](#reopen_task)
 - [Labels](#labels)
   - [`create_label`](#create_label)
+  - [`update_label`](#update_label)
   - [`get_labels`](#get_labels)
   - [`delete_label`](#delete_label)
 
@@ -252,6 +253,17 @@ Creates a new personal label with customizable properties including name, color,
 | `color` | No | Color code or key for the label |
 | `order` | No | Display order position (can be null) |
 | `isFavorite` | No | Mark label as favorite |
+
+#### `update_label`
+Modifies the properties of an existing personal label. Allows you to change the label's name, color, display order, and favorite status. All parameters except the label ID are optional, so you can update only the specific properties you want to change.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`id`** | **Yes** | ID of the label to update |
+| `name` | No | New name for the label |
+| `color` | No | New color code or key for the label |
+| `order` | No | New display order position (can be null) |
+| `isFavorite` | No | New favorite status |
 
 #### `get_labels`
 Retrieves all personal labels accessible to the authenticated user with their complete metadata including name, color, order, and favorite status. Returns a comprehensive list of labels that can be used for task organization and filtering. This tool provides read-only access to label information and handles pagination automatically.
