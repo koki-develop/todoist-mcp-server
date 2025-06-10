@@ -59,7 +59,7 @@ src/              # Source code
 │       ├── projects.ts   # Project tools (CRUD + read operations)
 │       ├── sections.ts   # Section tools (CRUD + read operations)
 │       ├── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
-│       └── labels.ts     # Label tools (create + read operations)
+│       └── labels.ts     # Label tools (create + read + delete operations)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -94,11 +94,11 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Tools**: Complete tools-only implementation with both read and write operations (19 total tools):
+- **Tools**: Complete tools-only implementation with both read and write operations (20 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
-  - **Label Tools**: `create_label`, `get_labels`
+  - **Label Tools**: `create_label`, `get_labels`, `delete_label`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
 - **Architecture**: Extensible structure for adding additional label operations and comments features
 
@@ -219,7 +219,7 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
    - **Projects**: `get_projects`, `create_project`, `delete_project`  
    - **Sections**: `create_section`, `get_sections`
    - **Tasks**: `create_task`, `get_tasks`, `close_task`
-   - **Labels**: `create_label`, `get_labels`
+   - **Labels**: `create_label`, `get_labels`, `delete_label`
 4. **Verify Results**: Check Japanese text support, natural language date parsing, and hierarchical data structure
 
-This provides comprehensive validation of all 19 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 20 MCP tools through automated browser interaction.
