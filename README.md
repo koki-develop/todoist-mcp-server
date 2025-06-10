@@ -84,6 +84,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`delete_label`](#delete_label)
 - [Comments](#comments)
   - [`create_comment`](#create_comment)
+  - [`get_task_comments`](#get_task_comments)
 
 ### Projects
 
@@ -330,6 +331,13 @@ Adds a comment to a Todoist task or project. Supports rich text content and opti
 | `attachment.fileName` | No | Name of the attached file |
 | `attachment.fileType` | No | MIME type of the file |
 | `attachment.resourceType` | No | Type of resource |
+
+#### `get_task_comments`
+Retrieves all comments associated with a specific Todoist task. Returns a comprehensive list of comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the task.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`taskId`** | **Yes** | ID of the task to retrieve comments from |
 
 ## License
 

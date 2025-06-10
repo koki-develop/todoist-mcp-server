@@ -126,10 +126,10 @@ function createMockLabel(overrides: Partial<Label> = {}): Label {
 function createMockComment(overrides: Partial<Comment> = {}): Comment {
   return {
     id: "1",
-    content: "Test comment",
+    content: "Test comment content",
     postedAt: "2023-01-01T00:00:00Z",
     postedUid: "user123",
-    taskId: "task1",
+    taskId: "task123",
     projectId: undefined,
     fileAttachment: null,
     uidsToNotify: null,
@@ -164,6 +164,7 @@ const mockTodoistApi = {
   getLabel: mock(),
   addComment: mock(),
   quickAddTask: mock(),
+  getComments: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -200,6 +201,7 @@ describe("TodoistClient", () => {
     mockTodoistApi.getLabel.mockClear();
     mockTodoistApi.addComment.mockClear();
     mockTodoistApi.quickAddTask.mockClear();
+    mockTodoistApi.getComments.mockClear();
   });
 
   describe("getProjects", () => {
@@ -1124,6 +1126,102 @@ describe("TodoistClient", () => {
         reminder: undefined,
         autoReminder: undefined,
         meta: undefined,
+      });
+    });
+  });
+
+  describe("getTaskComments", () => {
+    test("should handle multiple pages of comments", async () => {
+      // Setup: Create mock comments for multi-page response
+      const mockComment1 = createMockComment({
+        id: "1",
+        content: "First comment",
+        taskId: "task123",
+      });
+      const mockComment2 = createMockComment({
+        id: "2",
+        content: "Second comment",
+        taskId: "task123",
+        postedAt: "2023-01-02T00:00:00Z",
+        postedUid: "user456",
+      });
+
+      // Mock paginated API responses
+      mockTodoistApi.getComments
+        .mockResolvedValueOnce({
+          results: [mockComment1],
+          nextCursor: "cursor1",
+        })
+        .mockResolvedValueOnce({
+          results: [mockComment2],
+          nextCursor: null,
+        });
+
+      const comments = await client.getTaskComments("task123");
+
+      // Verify: All comments collected from multiple pages
+      expect(comments).toEqual([mockComment1, mockComment2]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getComments).toHaveBeenNthCalledWith(1, {
+        taskId: "task123",
+        cursor: null,
+      });
+      expect(mockTodoistApi.getComments).toHaveBeenNthCalledWith(2, {
+        taskId: "task123",
+        cursor: "cursor1",
+      });
+    });
+
+    test("should handle single page response", async () => {
+      const mockComment = createMockComment({
+        id: "comment123",
+        content: "Single comment",
+        taskId: "task456",
+        fileAttachment: {
+          resourceType: "file",
+          fileName: "document.pdf",
+          fileSize: 1024,
+          fileType: "application/pdf",
+          fileUrl: "https://example.com/file.pdf",
+        },
+        reactions: {
+          "👍": ["user123", "user456"],
+          "🎉": ["user789"],
+        },
+      });
+
+      // Mock single-page response (no nextCursor)
+      mockTodoistApi.getComments.mockResolvedValueOnce({
+        results: [mockComment],
+        nextCursor: null,
+      });
+
+      const comments = await client.getTaskComments("task456");
+
+      // Verify: Only one API call made
+      expect(comments).toEqual([mockComment]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(1);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledWith({
+        taskId: "task456",
+        cursor: null,
+      });
+    });
+
+    test("should handle empty comments response", async () => {
+      // Mock empty response
+      mockTodoistApi.getComments.mockResolvedValueOnce({
+        results: [],
+        nextCursor: null,
+      });
+
+      const comments = await client.getTaskComments("task789");
+
+      // Verify: Empty array returned
+      expect(comments).toEqual([]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(1);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledWith({
+        taskId: "task789",
+        cursor: null,
       });
     });
   });
