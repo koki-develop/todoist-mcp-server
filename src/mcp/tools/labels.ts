@@ -22,6 +22,13 @@ const createLabelSchema = {
 
 const getLabelsSchema = {};
 
+const deleteLabelSchema = {
+  id: z
+    .string()
+    .min(1)
+    .describe("Unique identifier of the label to permanently delete"),
+};
+
 export function registerLabelTools(server: McpServer, client: TodoistClient) {
   // Create a new label
   server.tool(
@@ -68,6 +75,27 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: JSON.stringify(labels, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Delete a label
+  server.tool(
+    "delete_label",
+    "PERMANENTLY delete a personal label by its ID. WARNING: This action is IRREVERSIBLE and will automatically remove the label from all associated tasks. Use with caution as deleted labels cannot be recovered. Validates the label ID and provides clear success/failure messaging.",
+    deleteLabelSchema,
+    async ({ id }) => {
+      const success = await client.deleteLabel(id);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: success
+              ? `Label with ID "${id}" has been permanently deleted successfully. The label has been automatically removed from all associated tasks.`
+              : `Failed to delete label with ID "${id}". The label may not exist or you may not have permission to delete it.`,
           },
         ],
       };
