@@ -1,5 +1,7 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
+  Comment,
+  CreateCommentParams,
   CreateLabelParams,
   CreateProjectParams,
   CreateSectionParams,
@@ -200,5 +202,22 @@ export class TodoistClient {
 
   async deleteLabel(id: string): Promise<boolean> {
     return this._api.deleteLabel(id);
+  }
+
+  async createComment(params: CreateCommentParams): Promise<Comment> {
+    // Build the API params ensuring exactly one of taskId or projectId is set
+    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter construction with mutual exclusivity
+    const apiParams: any = {
+      content: params.content,
+      attachment: params.attachment,
+    };
+
+    if (params.taskId) {
+      apiParams.taskId = params.taskId;
+    } else if (params.projectId) {
+      apiParams.projectId = params.projectId;
+    }
+
+    return this._api.addComment(apiParams);
   }
 }

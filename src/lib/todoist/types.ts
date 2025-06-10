@@ -1,4 +1,5 @@
 import type {
+  Comment,
   Label,
   PersonalProject,
   Section,
@@ -7,7 +8,7 @@ import type {
 } from "@doist/todoist-api-typescript";
 
 export type Project = PersonalProject | WorkspaceProject;
-export type { Label, Task, Section };
+export type { Comment, Label, Task, Section };
 
 export interface CreateProjectParams {
   name: string;
@@ -91,4 +92,16 @@ export interface UpdateLabelParams {
   color?: string;
   order?: number | null;
   isFavorite?: boolean;
+}
+
+export interface CreateCommentParams {
+  content: string;
+  taskId?: string;
+  projectId?: string;
+  attachment?: {
+    fileName?: string;
+    fileUrl: string;
+    fileType?: string;
+    resourceType?: string;
+  };
 }
