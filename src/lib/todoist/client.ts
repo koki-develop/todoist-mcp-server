@@ -1,11 +1,15 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
   CreateProjectParams,
+  CreateSectionParams,
   CreateTaskParams,
+  GetSectionsParams,
   GetTasksParams,
   Project,
+  Section,
   Task,
   UpdateProjectParams,
+  UpdateSectionParams,
   UpdateTaskParams,
 } from "./types";
 
@@ -113,5 +117,46 @@ export class TodoistClient {
 
   async reopenTask(id: string): Promise<boolean> {
     return this._api.reopenTask(id);
+  }
+
+  async getSections(params: GetSectionsParams): Promise<Section[]> {
+    const sections: Section[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getSections({
+        projectId: params.projectId,
+        cursor,
+      });
+      sections.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return sections;
+  }
+
+  async getSection(id: string): Promise<Section> {
+    return this._api.getSection(id);
+  }
+
+  async createSection(params: CreateSectionParams): Promise<Section> {
+    return this._api.addSection({
+      name: params.name,
+      projectId: params.projectId,
+      order: params.order,
+    });
+  }
+
+  async updateSection(
+    id: string,
+    params: UpdateSectionParams,
+  ): Promise<Section> {
+    return this._api.updateSection(id, {
+      name: params.name,
+    });
+  }
+
+  async deleteSection(id: string): Promise<boolean> {
+    return this._api.deleteSection(id);
   }
 }

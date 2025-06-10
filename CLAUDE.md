@@ -57,6 +57,7 @@ src/              # Source code
 │   └── tools/     # Tool handlers with co-located schemas  
 │       ├── index.ts      # registerTools() aggregator
 │       ├── projects.ts   # Project tools (CRUD + read operations)
+│       ├── sections.ts   # Section tools (CRUD + read operations)
 │       └── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
 └── lib/
     └── todoist/  # Todoist API client wrapper
@@ -87,16 +88,17 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Todoist Integration Layer**: Complete `TodoistClient` class in `src/lib/todoist/client.ts`:
 
-- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project and task CRUD operations
-- **Pagination**: Automatic pagination handling in `getProjects()` and `getTasks()` methods using cursor-based iteration
+- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, and task CRUD operations
+- **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, and `getTasks()` methods using cursor-based iteration
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
 - **Tools**: Complete tools-only implementation with both read and write operations:
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
+  - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
-- **Architecture**: Extensible structure for adding sections, labels, comments features
+- **Architecture**: Extensible structure for adding labels, comments features
 
 ## Development Tooling
 
@@ -119,7 +121,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Testing**: Uses bun:test with Jest-compatible API
 - Mock functions and module mocking via `mock()` and `mock.module()`
-- Factory functions for creating test data (e.g., `createMockProject()`, `createMockTask()`)
+- Factory functions for creating test data (e.g., `createMockProject()`, `createMockSection()`, `createMockTask()`)
 - Test file naming convention: `*.spec.ts`
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 - Run single test file: `bun test src/lib/todoist/client.spec.ts`
@@ -145,6 +147,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Tools-Only Architecture Migration**: The project migrated from a mixed resources/tools approach to tools-only for better client compatibility. Many MCP clients have limited or no support for MCP resources, and resources cannot accept complex parameters for filtering. All previous resource functionality is now available through tools with enhanced capabilities:
 - `get_projects` and `get_project` replace the previous `todoist://projects` resources
+- `get_sections` and `get_section` provide project section management
 - `get_tasks` and `get_task` replace the previous `todoist://tasks` resources with added filtering options
 
 **Colocation Pattern**: Schemas are defined within the same file as their usage (tools) rather than centralized, improving maintainability and reducing coupling.

@@ -2,11 +2,15 @@ import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { TodoistClient } from "./client";
 import type {
   CreateProjectParams,
+  CreateSectionParams,
   CreateTaskParams,
+  GetSectionsParams,
   GetTasksParams,
   Project,
+  Section,
   Task,
   UpdateProjectParams,
+  UpdateSectionParams,
   UpdateTaskParams,
 } from "./types";
 
@@ -74,6 +78,27 @@ function createMockTask(overrides: Partial<Task> = {}): Task {
   };
 }
 
+/**
+ * Factory function for creating mock Section objects with sensible defaults.
+ * Useful for reducing test boilerplate and focusing on test-specific data.
+ */
+function createMockSection(overrides: Partial<Section> = {}): Section {
+  return {
+    id: "1",
+    userId: "user123",
+    projectId: "1",
+    name: "Test Section",
+    sectionOrder: 1,
+    addedAt: "2023-01-01T00:00:00Z",
+    updatedAt: "2023-01-01T00:00:00Z",
+    archivedAt: null,
+    isArchived: false,
+    isDeleted: false,
+    isCollapsed: false,
+    ...overrides,
+  };
+}
+
 // Mock the entire TodoistApi with all required methods
 const mockTodoistApi = {
   getProjects: mock(),
@@ -88,6 +113,11 @@ const mockTodoistApi = {
   deleteTask: mock(),
   closeTask: mock(),
   reopenTask: mock(),
+  getSections: mock(),
+  getSection: mock(),
+  addSection: mock(),
+  updateSection: mock(),
+  deleteSection: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -112,6 +142,11 @@ describe("TodoistClient", () => {
     mockTodoistApi.deleteTask.mockClear();
     mockTodoistApi.closeTask.mockClear();
     mockTodoistApi.reopenTask.mockClear();
+    mockTodoistApi.getSections.mockClear();
+    mockTodoistApi.getSection.mockClear();
+    mockTodoistApi.addSection.mockClear();
+    mockTodoistApi.updateSection.mockClear();
+    mockTodoistApi.deleteSection.mockClear();
   });
 
   describe("getProjects", () => {
@@ -502,6 +537,164 @@ describe("TodoistClient", () => {
 
       expect(result).toBe(true);
       expect(mockTodoistApi.reopenTask).toHaveBeenCalledWith("reopen123");
+    });
+  });
+
+  describe("getSections", () => {
+    test("should get sections with pagination", async () => {
+      const params: GetSectionsParams = { projectId: "project123" };
+
+      const mockSection1 = createMockSection({ id: "1", name: "Section 1" });
+      const mockSection2 = createMockSection({ id: "2", name: "Section 2" });
+      const mockSection3 = createMockSection({ id: "3", name: "Section 3" });
+
+      // Mock pagination responses
+      mockTodoistApi.getSections
+        .mockResolvedValueOnce({
+          results: [mockSection1, mockSection2],
+          nextCursor: "cursor123",
+        })
+        .mockResolvedValueOnce({
+          results: [mockSection3],
+          nextCursor: null,
+        });
+
+      const sections = await client.getSections(params);
+
+      expect(sections).toEqual([mockSection1, mockSection2, mockSection3]);
+      expect(mockTodoistApi.getSections).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getSections).toHaveBeenNthCalledWith(1, {
+        projectId: "project123",
+        cursor: null,
+      });
+      expect(mockTodoistApi.getSections).toHaveBeenNthCalledWith(2, {
+        projectId: "project123",
+        cursor: "cursor123",
+      });
+    });
+
+    test("should get sections without pagination", async () => {
+      const params: GetSectionsParams = { projectId: "project123" };
+      const mockSection = createMockSection({
+        id: "1",
+        name: "Single Section",
+      });
+
+      mockTodoistApi.getSections.mockResolvedValueOnce({
+        results: [mockSection],
+        nextCursor: null,
+      });
+
+      const sections = await client.getSections(params);
+
+      expect(sections).toEqual([mockSection]);
+      expect(mockTodoistApi.getSections).toHaveBeenCalledTimes(1);
+      expect(mockTodoistApi.getSections).toHaveBeenCalledWith({
+        projectId: "project123",
+        cursor: null,
+      });
+    });
+  });
+
+  describe("getSection", () => {
+    test("should get a section by ID", async () => {
+      const mockSection = createMockSection({
+        id: "123",
+        name: "Test Section",
+      });
+
+      mockTodoistApi.getSection.mockResolvedValueOnce(mockSection);
+
+      const section = await client.getSection("123");
+
+      expect(section).toEqual(mockSection);
+      expect(mockTodoistApi.getSection).toHaveBeenCalledWith("123");
+    });
+  });
+
+  describe("createSection", () => {
+    test("should create a section with all parameters", async () => {
+      const params: CreateSectionParams = {
+        name: "New Section",
+        projectId: "project123",
+        order: 5,
+      };
+
+      const mockCreatedSection = createMockSection({
+        id: "new123",
+        name: "New Section",
+        projectId: "project123",
+        sectionOrder: 5,
+      });
+
+      mockTodoistApi.addSection.mockResolvedValueOnce(mockCreatedSection);
+
+      const section = await client.createSection(params);
+
+      expect(section).toEqual(mockCreatedSection);
+      expect(mockTodoistApi.addSection).toHaveBeenCalledWith({
+        name: "New Section",
+        projectId: "project123",
+        order: 5,
+      });
+    });
+
+    test("should create a section with minimal parameters", async () => {
+      const params: CreateSectionParams = {
+        name: "Simple Section",
+        projectId: "project123",
+      };
+
+      const mockCreatedSection = createMockSection({
+        id: "simple123",
+        name: "Simple Section",
+        projectId: "project123",
+      });
+
+      mockTodoistApi.addSection.mockResolvedValueOnce(mockCreatedSection);
+
+      const section = await client.createSection(params);
+
+      expect(section).toEqual(mockCreatedSection);
+      expect(mockTodoistApi.addSection).toHaveBeenCalledWith({
+        name: "Simple Section",
+        projectId: "project123",
+        order: undefined,
+      });
+    });
+  });
+
+  describe("updateSection", () => {
+    test("should update a section", async () => {
+      const params: UpdateSectionParams = {
+        name: "Updated Section",
+      };
+
+      const mockUpdatedSection = createMockSection({
+        id: "update123",
+        name: "Updated Section",
+        updatedAt: "2023-01-02T00:00:00Z",
+      });
+
+      mockTodoistApi.updateSection.mockResolvedValueOnce(mockUpdatedSection);
+
+      const section = await client.updateSection("update123", params);
+
+      expect(section).toEqual(mockUpdatedSection);
+      expect(mockTodoistApi.updateSection).toHaveBeenCalledWith("update123", {
+        name: "Updated Section",
+      });
+    });
+  });
+
+  describe("deleteSection", () => {
+    test("should delete a section", async () => {
+      mockTodoistApi.deleteSection.mockResolvedValueOnce(true);
+
+      const result = await client.deleteSection("delete123");
+
+      expect(result).toBe(true);
+      expect(mockTodoistApi.deleteSection).toHaveBeenCalledWith("delete123");
     });
   });
 });
