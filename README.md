@@ -71,6 +71,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`get_tasks`](#get_tasks)
   - [`get_task`](#get_task)
   - [`create_task`](#create_task)
+  - [`quick_add_task`](#quick_add_task)
   - [`update_task`](#update_task)
   - [`delete_task`](#delete_task)
   - [`close_task`](#close_task)
@@ -206,6 +207,34 @@ Creates a new Todoist task with comprehensive configuration options.
 | `assigneeId` | No | ID of user to assign task to |
 | `duration` | No | Task duration amount |
 | `durationUnit` | No | Duration unit (minute or day) |
+
+#### `quick_add_task`
+Creates a task using Todoist's natural language processing for intelligent parsing of due dates, project assignments, labels, and priorities. This tool accepts free-form text input and automatically extracts structured task data. **Perfect for intuitive task creation with minimal effort.**
+
+**Natural Language Syntax:**
+- **Due dates**: `tomorrow`, `next Monday at 2pm`, `in 3 days`
+- **Projects**: `#Work`, `#Personal`, `#Shopping`
+- **Labels**: `@urgent`, `@waiting`, `@important`
+- **Priorities**: `!` (medium), `!!` (high), `!!!` (urgent)
+- **Times**: `at 3pm`, `9:30am`, `tonight`
+- **Assignees**: `+john@example.com`
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`text`** | **Yes** | Natural language text describing the task (e.g., `Buy groceries tomorrow #shopping @urgent`) |
+| `note` | No | Additional description or notes for the task |
+| `reminder` | No | Natural language reminder specification (e.g., `30 minutes before`) |
+| `autoReminder` | No | Enable automatic reminder based on due date |
+| `meta` | No | Return parsing metadata to see how text was interpreted |
+
+**Examples:**
+```
+"Buy groceries tomorrow #shopping @urgent"
+"Meeting with client next Monday at 2pm #work"
+"Submit report by Friday !!!"
+"Call mom in 3 days @personal"
+"Doctor appointment Thursday at 10am +john@example.com"
+```
 
 #### `update_task`
 Modifies the properties of an existing Todoist task.
