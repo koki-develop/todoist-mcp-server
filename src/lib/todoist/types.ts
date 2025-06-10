@@ -105,3 +105,11 @@ export interface CreateCommentParams {
     resourceType?: string;
   };
 }
+
+export interface QuickAddTaskParams {
+  text: string;
+  note?: string;
+  reminder?: string;
+  autoReminder?: boolean;
+  meta?: boolean;
+}

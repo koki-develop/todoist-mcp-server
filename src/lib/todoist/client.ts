@@ -10,6 +10,7 @@ import type {
   GetTasksParams,
   Label,
   Project,
+  QuickAddTaskParams,
   Section,
   Task,
   UpdateLabelParams,
@@ -219,5 +220,15 @@ export class TodoistClient {
     }
 
     return this._api.addComment(apiParams);
+  }
+
+  async quickAddTask(params: QuickAddTaskParams): Promise<Task> {
+    return this._api.quickAddTask({
+      text: params.text,
+      note: params.note,
+      reminder: params.reminder,
+      autoReminder: params.autoReminder,
+      meta: params.meta,
+    });
   }
 }
