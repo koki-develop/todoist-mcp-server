@@ -82,6 +82,6 @@ export interface UpdateSectionParams {
 export interface CreateLabelParams {
   name: string;
   color?: string;
-  order?: number;
+  order?: number | null;
   isFavorite?: boolean;
 }

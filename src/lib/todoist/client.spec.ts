@@ -769,12 +769,12 @@ describe("TodoistClient", () => {
       // Setup: Explicitly null order value
       const params: CreateLabelParams = {
         name: "Null Order Label",
-        order: null as unknown as undefined,
+        order: null,
       };
       const mockCreatedLabel = createMockLabel({
         id: "null123",
         name: "Null Order Label",
-        order: null as unknown as number,
+        order: null,
       });
 
       mockTodoistApi.addLabel.mockResolvedValueOnce(mockCreatedLabel);

@@ -30,7 +30,7 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
       const label = await client.createLabel({
         name,
         color,
-        order: order !== null ? order : undefined,
+        order,
         isFavorite,
       });
 
