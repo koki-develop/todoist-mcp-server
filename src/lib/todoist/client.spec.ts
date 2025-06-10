@@ -136,6 +136,7 @@ const mockTodoistApi = {
   deleteSection: mock(),
   addLabel: mock(),
   getLabels: mock(),
+  getLabel: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -844,6 +845,25 @@ describe("TodoistClient", () => {
       // Verify: Only one API call made
       expect(labels).toEqual([mockLabel]);
       expect(mockTodoistApi.getLabels).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("getLabel", () => {
+    test("should return a specific label", async () => {
+      const mockLabel = createMockLabel({
+        id: "label123",
+        name: "Important",
+        color: "red",
+        isFavorite: true,
+        order: 1,
+      });
+
+      mockTodoistApi.getLabel.mockResolvedValueOnce(mockLabel);
+
+      const label = await client.getLabel("label123");
+
+      expect(label).toEqual(mockLabel);
+      expect(mockTodoistApi.getLabel).toHaveBeenCalledWith("label123");
     });
   });
 });

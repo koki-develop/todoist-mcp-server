@@ -41,13 +41,16 @@ const updateLabelSchema = {
 
 const getLabelsSchema = {};
 
+const getLabelSchema = {
+  id: z.string().min(1).describe("ID of the label to retrieve"),
+};
+
 const deleteLabelSchema = {
   id: z
     .string()
     .min(1)
     .describe("Unique identifier of the label to permanently delete"),
 };
-
 export function registerLabelTools(server: McpServer, client: TodoistClient) {
   // Create a new label
   server.tool(
@@ -105,6 +108,28 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
     },
   );
 
+  // Get a specific label by ID
+  server.tool(
+    "get_label",
+    "Retrieve a specific personal label by its unique ID with complete metadata including name, color, order, and favorite status. Returns detailed information about the requested label for use in task organization and filtering. Requires a valid label ID that belongs to the authenticated user.",
+    getLabelSchema,
+    async ({ id }) => {
+      const label = await client.getLabel(id);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved label "${label.name}" with ID: ${label.id}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(label, null, 2),
+          },
+        ],
+      };
+    },
+  );
   // Get all labels
   server.tool(
     "get_labels",
