@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.0.3...v0.1.0) (2025-06-10)
+
+
+### Features
+
+* add comprehensive section management support ([#18](https://github.com/koki-develop/todoist-mcp-server/issues/18)) ([4958103](https://github.com/koki-develop/todoist-mcp-server/commit/495810301d4f8b3c77cf69f49d52d845f44fb349))
+* implement comprehensive task management features ([#9](https://github.com/koki-develop/todoist-mcp-server/issues/9)) ([cc77bd9](https://github.com/koki-develop/todoist-mcp-server/commit/cc77bd938ac203d9fde31125c5d9afdee1770656))
+* migrate MCP resources to tools for improved client compatibility ([#17](https://github.com/koki-develop/todoist-mcp-server/issues/17)) ([edc985b](https://github.com/koki-develop/todoist-mcp-server/commit/edc985b8f9f5c8004ec5797dbc57cb6c4b7ff003))
+
 ## [0.0.3](https://github.com/koki-develop/todoist-mcp-server/compare/v0.0.2...v0.0.3) (2025-06-08)
 
 
