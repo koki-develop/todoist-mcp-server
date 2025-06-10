@@ -28,6 +28,13 @@ const createCommentSchema = {
     .describe("File attachment (optional)"),
 };
 
+const getTaskCommentsSchema = {
+  taskId: z
+    .string()
+    .min(1)
+    .describe("ID of the task to retrieve comments from"),
+};
+
 export function registerCommentTools(server: McpServer, client: TodoistClient) {
   // Create a new comment
   server.tool(
@@ -72,6 +79,29 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: JSON.stringify(comment, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Get comments for a specific task
+  server.tool(
+    "get_task_comments",
+    "Retrieve all comments associated with a specific Todoist task. Returns a comprehensive list of comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the task.",
+    getTaskCommentsSchema,
+    async ({ taskId }) => {
+      const comments = await client.getTaskComments(taskId);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved ${comments.length} comment(s) for task ID: ${taskId}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(comments, null, 2),
           },
         ],
       };

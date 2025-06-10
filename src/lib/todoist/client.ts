@@ -231,4 +231,17 @@ export class TodoistClient {
       meta: params.meta,
     });
   }
+
+  async getTaskComments(taskId: string): Promise<Comment[]> {
+    const comments: Comment[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getComments({ taskId, cursor });
+      comments.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return comments;
+  }
 }
