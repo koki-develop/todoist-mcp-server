@@ -85,3 +85,10 @@ export interface CreateLabelParams {
   order?: number | null;
   isFavorite?: boolean;
 }
+
+export interface UpdateLabelParams {
+  name?: string;
+  color?: string;
+  order?: number | null;
+  isFavorite?: boolean;
+}

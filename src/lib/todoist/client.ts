@@ -10,6 +10,7 @@ import type {
   Project,
   Section,
   Task,
+  UpdateLabelParams,
   UpdateProjectParams,
   UpdateSectionParams,
   UpdateTaskParams,
@@ -164,6 +165,15 @@ export class TodoistClient {
 
   async createLabel(params: CreateLabelParams): Promise<Label> {
     return this._api.addLabel({
+      name: params.name,
+      color: params.color,
+      order: params.order,
+      isFavorite: params.isFavorite,
+    });
+  }
+
+  async updateLabel(id: string, params: UpdateLabelParams): Promise<Label> {
+    return this._api.updateLabel(id, {
       name: params.name,
       color: params.color,
       order: params.order,
