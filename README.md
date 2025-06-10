@@ -76,6 +76,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`reopen_task`](#reopen_task)
 - [Labels](#labels)
   - [`create_label`](#create_label)
+  - [`get_labels`](#get_labels)
 
 ### Projects
 
@@ -251,6 +252,8 @@ Creates a new personal label with customizable properties including name, color,
 | `order` | No | Display order position (can be null) |
 | `isFavorite` | No | Mark label as favorite |
 
+#### `get_labels`
+Retrieves all personal labels accessible to the authenticated user with their complete metadata including name, color, order, and favorite status. Returns a comprehensive list of labels that can be used for task organization and filtering. This tool provides read-only access to label information and handles pagination automatically.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

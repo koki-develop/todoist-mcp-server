@@ -170,4 +170,17 @@ export class TodoistClient {
       isFavorite: params.isFavorite,
     });
   }
+
+  async getLabels(): Promise<Label[]> {
+    const labels: Label[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getLabels({ cursor });
+      labels.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return labels;
+  }
 }

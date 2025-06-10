@@ -7,7 +7,7 @@ import type {
 } from "@doist/todoist-api-typescript";
 
 export type Project = PersonalProject | WorkspaceProject;
-export type { Task, Section, Label };
+export type { Label, Task, Section };
 
 export interface CreateProjectParams {
   name: string;
