@@ -183,4 +183,8 @@ export class TodoistClient {
 
     return labels;
   }
+
+  async deleteLabel(id: string): Promise<boolean> {
+    return this._api.deleteLabel(id);
+  }
 }
