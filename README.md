@@ -17,6 +17,7 @@ The Todoist MCP server provides a bridge between AI assistants and your Todoist 
   - [Sections](#sections)
   - [Tasks](#tasks)
   - [Labels](#labels)
+  - [Comments](#comments)
 - [License](#license)
 
 ## Prerequisites
@@ -80,6 +81,8 @@ The server provides the following tools that AI assistants can use to interact w
   - [`get_label`](#get_label)
   - [`get_labels`](#get_labels)
   - [`delete_label`](#delete_label)
+- [Comments](#comments)
+  - [`create_comment`](#create_comment)
 
 ### Projects
 
@@ -282,6 +285,22 @@ Permanently deletes a personal label by its unique identifier. **WARNING: This a
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`id`** | **Yes** | Unique identifier of the label to permanently delete |
+
+### Comments
+
+#### `create_comment`
+Adds a comment to a Todoist task or project. Supports rich text content and optional file attachments. **You must specify either a task ID or project ID, but not both.** Returns the complete comment object with all metadata upon successful creation.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`content`** | **Yes** | The text content of the comment |
+| `taskId` | No | ID of the task to comment on (mutually exclusive with projectId) |
+| `projectId` | No | ID of the project to comment on (mutually exclusive with taskId) |
+| `attachment` | No | File attachment object with URL and metadata |
+| `attachment.fileUrl` | **Yes*** | URL of the file to attach (*required if attachment is provided) |
+| `attachment.fileName` | No | Name of the attached file |
+| `attachment.fileType` | No | MIME type of the file |
+| `attachment.resourceType` | No | Type of resource |
 
 ## License
 
