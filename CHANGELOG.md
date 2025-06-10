@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.1.0...v0.2.0) (2025-06-10)
+
+
+### Features
+
+* add create_label tool for personal label management ([#31](https://github.com/koki-develop/todoist-mcp-server/issues/31)) ([ccc3361](https://github.com/koki-develop/todoist-mcp-server/commit/ccc3361a006344bcbf69fb59b53442e9f631fbd6))
+* add update_label tool for label modification ([#36](https://github.com/koki-develop/todoist-mcp-server/issues/36)) ([b91de14](https://github.com/koki-develop/todoist-mcp-server/commit/b91de14f2d9f855d14c8beaf86c8367667b7c256))
+* implement delete_label tool for label removal ([#35](https://github.com/koki-develop/todoist-mcp-server/issues/35)) ([de271c3](https://github.com/koki-develop/todoist-mcp-server/commit/de271c3313379423f356422735b368fdf65f9396))
+* implement get_label tool for individual label retrieval ([#34](https://github.com/koki-develop/todoist-mcp-server/issues/34)) ([e33b699](https://github.com/koki-develop/todoist-mcp-server/commit/e33b699daf7889a8319396319b5dcf3587928cdf))
+* implement get_labels tool for personal label management ([#33](https://github.com/koki-develop/todoist-mcp-server/issues/33)) ([a68a5cd](https://github.com/koki-develop/todoist-mcp-server/commit/a68a5cdb8b9f17043303ccf9c71f36d60d149fa4))
+
 ## [0.1.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.0.3...v0.1.0) (2025-06-10)
 
 
