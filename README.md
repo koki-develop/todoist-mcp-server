@@ -39,11 +39,11 @@ To use this server with an MCP client, add the following configuration:
 
 Replace `<your_api_token_here>` with your actual Todoist API token.
 
-## Available Features
-
-### MCP Tools
+## MCP Tools
 
 The server provides the following tools that AI assistants can use to interact with your Todoist data:
+
+### Projects
 
 #### `get_projects`
 Retrieves all Todoist projects accessible to the authenticated user. Returns comprehensive project information including personal and workspace projects with metadata such as name, color, favorite status, view style, and hierarchy information.
@@ -51,27 +51,6 @@ Retrieves all Todoist projects accessible to the authenticated user. Returns com
 #### `get_project`
 Accesses detailed information for a specific Todoist project using its unique identifier. Provides complete project metadata including configuration, hierarchy, and organizational details.
 - **id** (required): ID of the project to retrieve
-
-#### `get_tasks`
-Retrieves Todoist tasks with flexible filtering options. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Without filters, returns all tasks accessible to the authenticated user.
-- **projectId** (optional): Filter tasks by project ID
-- **sectionId** (optional): Filter tasks by section ID
-- **labelId** (optional): Filter tasks by label ID
-- **filter** (optional): Custom filter query in Todoist filter syntax
-- **lang** (optional): Language for filter parsing
-- **ids** (optional): Array of specific task IDs to retrieve
-
-#### `get_task`
-Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.
-- **id** (required): ID of the task to retrieve
-
-#### `get_sections`
-Retrieves all sections within a specific Todoist project. Returns a comprehensive list of sections with their metadata such as name, order, creation and update timestamps, and status information. Sections are returned in their display order within the project.
-- **projectId** (required): ID of the project to retrieve sections from
-
-#### `get_section`
-Accesses detailed information for a specific Todoist section using its unique identifier. Provides complete section metadata including name, project assignment, order position, timestamps, and status flags.
-- **id** (required): ID of the section to retrieve
 
 #### `create_project`
 Creates a new Todoist project with customizable settings. Allows you to set up a project with:
@@ -93,6 +72,16 @@ Modifies the properties of an existing Todoist project. Allows you to change:
 Permanently deletes a Todoist project by its unique identifier. This action removes the project and all associated tasks, sections, and comments. **This operation cannot be undone.**
 - **id** (required): ID of the project to delete
 
+### Sections
+
+#### `get_sections`
+Retrieves all sections within a specific Todoist project. Returns a comprehensive list of sections with their metadata such as name, order, creation and update timestamps, and status information. Sections are returned in their display order within the project.
+- **projectId** (required): ID of the project to retrieve sections from
+
+#### `get_section`
+Accesses detailed information for a specific Todoist section using its unique identifier. Provides complete section metadata including name, project assignment, order position, timestamps, and status flags.
+- **id** (required): ID of the section to retrieve
+
 #### `create_section`
 Creates a new section within a Todoist project to organize tasks. Sections help categorize and group related tasks within a project.
 - **name** (required): Name of the section to create
@@ -107,6 +96,21 @@ Modifies the name of an existing Todoist section. Currently, only the section na
 #### `delete_section`
 Permanently deletes a Todoist section by its unique identifier. This action removes the section and moves any tasks in this section to the project's main area. **This operation cannot be undone.**
 - **id** (required): ID of the section to delete
+
+### Tasks
+
+#### `get_tasks`
+Retrieves Todoist tasks with flexible filtering options. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Without filters, returns all tasks accessible to the authenticated user.
+- **projectId** (optional): Filter tasks by project ID
+- **sectionId** (optional): Filter tasks by section ID
+- **labelId** (optional): Filter tasks by label ID
+- **filter** (optional): Custom filter query in Todoist filter syntax
+- **lang** (optional): Language for filter parsing
+- **ids** (optional): Array of specific task IDs to retrieve
+
+#### `get_task`
+Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.
+- **id** (required): ID of the task to retrieve
 
 #### `create_task`
 Creates a new Todoist task with comprehensive configuration options. Allows you to set up a task with:
