@@ -20,6 +20,8 @@ const createLabelSchema = {
     .describe("Mark label as favorite (optional)"),
 };
 
+const getLabelsSchema = {};
+
 export function registerLabelTools(server: McpServer, client: TodoistClient) {
   // Create a new label
   server.tool(
@@ -43,6 +45,29 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: JSON.stringify(label, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Get all labels
+  server.tool(
+    "get_labels",
+    "Retrieve all personal labels accessible to the authenticated user with their complete metadata including name, color, order, and favorite status. Returns a comprehensive list of labels that can be used for task organization and filtering. This tool provides read-only access to label information and handles pagination automatically.",
+    getLabelsSchema,
+    async () => {
+      const labels = await client.getLabels();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved ${labels.length} label(s)`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(labels, null, 2),
           },
         ],
       };

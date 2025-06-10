@@ -115,7 +115,6 @@ function createMockLabel(overrides: Partial<Label> = {}): Label {
     ...overrides,
   };
 }
-
 // Mock the entire TodoistApi with all required methods
 const mockTodoistApi = {
   getProjects: mock(),
@@ -136,6 +135,7 @@ const mockTodoistApi = {
   updateSection: mock(),
   deleteSection: mock(),
   addLabel: mock(),
+  getLabels: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -165,6 +165,8 @@ describe("TodoistClient", () => {
     mockTodoistApi.addSection.mockClear();
     mockTodoistApi.updateSection.mockClear();
     mockTodoistApi.deleteSection.mockClear();
+    mockTodoistApi.addLabel.mockClear();
+    mockTodoistApi.getLabels.mockClear();
   });
 
   describe("getProjects", () => {
@@ -789,6 +791,59 @@ describe("TodoistClient", () => {
         order: null,
         isFavorite: undefined,
       });
+    });
+  });
+
+  describe("getLabels", () => {
+    test("should return all labels with automatic pagination", async () => {
+      // Setup: Create mock labels for multi-page response
+      const mockLabel1 = createMockLabel({ id: "1", name: "Label 1" });
+      const mockLabel2 = createMockLabel({
+        id: "2",
+        name: "Label 2",
+        color: "green",
+        isFavorite: true,
+        order: 2,
+      });
+
+      // Mock paginated API responses
+      mockTodoistApi.getLabels
+        .mockResolvedValueOnce({
+          results: [mockLabel1],
+          nextCursor: "cursor1",
+        })
+        .mockResolvedValueOnce({ results: [mockLabel2], nextCursor: null });
+
+      const labels = await client.getLabels();
+
+      // Verify: All labels collected from multiple pages
+      expect(labels).toEqual([mockLabel1, mockLabel2]);
+      expect(mockTodoistApi.getLabels).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getLabels).toHaveBeenNthCalledWith(1, {
+        cursor: null,
+      });
+      expect(mockTodoistApi.getLabels).toHaveBeenNthCalledWith(2, {
+        cursor: "cursor1",
+      });
+    });
+
+    test("should handle single page response", async () => {
+      const mockLabel = createMockLabel({
+        name: "Single Label",
+        color: "green",
+      });
+
+      // Mock single-page response (no nextCursor)
+      mockTodoistApi.getLabels.mockResolvedValueOnce({
+        results: [mockLabel],
+        nextCursor: null,
+      });
+
+      const labels = await client.getLabels();
+
+      // Verify: Only one API call made
+      expect(labels).toEqual([mockLabel]);
+      expect(mockTodoistApi.getLabels).toHaveBeenCalledTimes(1);
     });
   });
 });
