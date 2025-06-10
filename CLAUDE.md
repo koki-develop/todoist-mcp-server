@@ -59,7 +59,7 @@ src/              # Source code
 │       ├── projects.ts   # Project tools (CRUD + read operations)
 │       ├── sections.ts   # Section tools (CRUD + read operations)
 │       ├── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
-│       └── labels.ts     # Label tools (create + update + read + delete operations)
+│       └── labels.ts     # Label tools (create + update + individual/list read + delete operations)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -91,14 +91,15 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 - **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, task, and label CRUD operations
 - **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, `getTasks()`, and `getLabels()` methods using cursor-based iteration
+- **Individual Retrieval**: Direct methods for getting individual items: `getProject()`, `getSection()`, `getTask()`, `getLabel()`
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Tools**: Complete tools-only implementation with both read and write operations (21 total tools):
+- **Tools**: Complete tools-only implementation with both read and write operations (22 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
-  - **Label Tools**: `create_label`, `update_label`, `get_labels`, `delete_label`
+  - **Label Tools**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
 - **Architecture**: Extensible structure for adding additional label operations and comments features
 
@@ -151,7 +152,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - `get_projects` and `get_project` replace the previous `todoist://projects` resources
 - `get_sections` and `get_section` provide project section management
 - `get_tasks` and `get_task` replace the previous `todoist://tasks` resources with added filtering options
-- `get_labels` provides comprehensive label listing functionality
+- `get_labels` and `get_label` provide comprehensive label management functionality
 
 **Colocation Pattern**: Schemas are defined within the same file as their usage (tools) rather than centralized, improving maintainability and reducing coupling.
 
@@ -219,7 +220,7 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
    - **Projects**: `get_projects`, `create_project`, `delete_project`  
    - **Sections**: `create_section`, `get_sections`
    - **Tasks**: `create_task`, `get_tasks`, `close_task`
-   - **Labels**: `create_label`, `update_label`, `get_labels`, `delete_label`
+   - **Labels**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
 4. **Verify Results**: Check Japanese text support, natural language date parsing, and hierarchical data structure
 
-This provides comprehensive validation of all 21 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 22 MCP tools through automated browser interaction.
