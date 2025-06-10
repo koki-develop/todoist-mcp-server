@@ -1,10 +1,12 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
+  CreateLabelParams,
   CreateProjectParams,
   CreateSectionParams,
   CreateTaskParams,
   GetSectionsParams,
   GetTasksParams,
+  Label,
   Project,
   Section,
   Task,
@@ -158,5 +160,14 @@ export class TodoistClient {
 
   async deleteSection(id: string): Promise<boolean> {
     return this._api.deleteSection(id);
+  }
+
+  async createLabel(params: CreateLabelParams): Promise<Label> {
+    return this._api.addLabel({
+      name: params.name,
+      color: params.color,
+      order: params.order,
+      isFavorite: params.isFavorite,
+    });
   }
 }

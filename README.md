@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/github/license/koki-develop/todoist-mcp-server)](./LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue.svg)](https://github.com/koki-develop/todoist-mcp-server/pkgs/container/todoist-mcp-server)
 
-A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects, sections, and tasks, allowing you to manage your entire productivity workflow through natural language conversations.
+A **Model Context Protocol (MCP) server** that connects the Todoist API with AI assistants like Claude. This server enables AI assistants to interact with your Todoist projects, sections, tasks, and labels, allowing you to manage your entire productivity workflow through natural language conversations.
 
-The Todoist MCP server provides a bridge between AI assistants and your Todoist workspace, enabling seamless project, section, and task management through conversational interfaces.
+The Todoist MCP server provides a bridge between AI assistants and your Todoist workspace, enabling seamless project, section, task, and label management through conversational interfaces.
 
 ## Table of Contents
 
@@ -16,6 +16,7 @@ The Todoist MCP server provides a bridge between AI assistants and your Todoist 
   - [Projects](#projects)
   - [Sections](#sections)
   - [Tasks](#tasks)
+  - [Labels](#labels)
 - [License](#license)
 
 ## Prerequisites
@@ -73,6 +74,8 @@ The server provides the following tools that AI assistants can use to interact w
   - [`delete_task`](#delete_task)
   - [`close_task`](#close_task)
   - [`reopen_task`](#reopen_task)
+- [Labels](#labels)
+  - [`create_label`](#create_label)
 
 ### Projects
 
@@ -235,6 +238,18 @@ Reopens a previously completed Todoist task, returning it to active status. This
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`id`** | **Yes** | ID of the completed task to reopen |
+
+### Labels
+
+#### `create_label`
+Creates a new personal label with customizable properties including name, color, display order, and favorite status. Labels can be used to categorize and organize tasks across projects.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`name`** | **Yes** | Name of the label to create |
+| `color` | No | Color code or key for the label |
+| `order` | No | Display order position (can be null) |
+| `isFavorite` | No | Mark label as favorite |
 
 ## License
 

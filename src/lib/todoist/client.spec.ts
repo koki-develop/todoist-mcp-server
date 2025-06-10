@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { TodoistClient } from "./client";
 import type {
+  CreateLabelParams,
   CreateProjectParams,
   CreateSectionParams,
   CreateTaskParams,
   GetSectionsParams,
   GetTasksParams,
+  Label,
   Project,
   Section,
   Task,
@@ -99,6 +101,21 @@ function createMockSection(overrides: Partial<Section> = {}): Section {
   };
 }
 
+/**
+ * Factory function for creating mock Label objects with sensible defaults.
+ * Useful for reducing test boilerplate and focusing on test-specific data.
+ */
+function createMockLabel(overrides: Partial<Label> = {}): Label {
+  return {
+    id: "1",
+    name: "Test Label",
+    color: "red",
+    order: 1,
+    isFavorite: false,
+    ...overrides,
+  };
+}
+
 // Mock the entire TodoistApi with all required methods
 const mockTodoistApi = {
   getProjects: mock(),
@@ -118,6 +135,7 @@ const mockTodoistApi = {
   addSection: mock(),
   updateSection: mock(),
   deleteSection: mock(),
+  addLabel: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -695,6 +713,82 @@ describe("TodoistClient", () => {
 
       expect(result).toBe(true);
       expect(mockTodoistApi.deleteSection).toHaveBeenCalledWith("delete123");
+    });
+  });
+
+  describe("createLabel", () => {
+    test("should create a label with all parameters", async () => {
+      // Setup: Full parameter set for label creation
+      const params: CreateLabelParams = {
+        name: "New Label",
+        color: "green",
+        order: 5,
+        isFavorite: true,
+      };
+
+      const mockCreatedLabel = createMockLabel({
+        id: "new123",
+        name: "New Label",
+        color: "green",
+        order: 5,
+        isFavorite: true,
+      });
+
+      mockTodoistApi.addLabel.mockResolvedValueOnce(mockCreatedLabel);
+
+      const label = await client.createLabel(params);
+
+      // Verify: Parameters passed through correctly
+      expect(label).toEqual(mockCreatedLabel);
+      expect(mockTodoistApi.addLabel).toHaveBeenCalledWith(params);
+    });
+
+    test("should create a label with minimal parameters", async () => {
+      // Setup: Only required parameter (name)
+      const params: CreateLabelParams = { name: "Simple Label" };
+      const mockCreatedLabel = createMockLabel({
+        id: "simple123",
+        name: "Simple Label",
+      });
+
+      mockTodoistApi.addLabel.mockResolvedValueOnce(mockCreatedLabel);
+
+      const label = await client.createLabel(params);
+
+      // Verify: Optional parameters passed as undefined
+      expect(label).toEqual(mockCreatedLabel);
+      expect(mockTodoistApi.addLabel).toHaveBeenCalledWith({
+        name: "Simple Label",
+        color: undefined,
+        order: undefined,
+        isFavorite: undefined,
+      });
+    });
+
+    test("should create a label with null order", async () => {
+      // Setup: Explicitly null order value
+      const params: CreateLabelParams = {
+        name: "Null Order Label",
+        order: null,
+      };
+      const mockCreatedLabel = createMockLabel({
+        id: "null123",
+        name: "Null Order Label",
+        order: null,
+      });
+
+      mockTodoistApi.addLabel.mockResolvedValueOnce(mockCreatedLabel);
+
+      const label = await client.createLabel(params);
+
+      // Verify: Null order handled correctly
+      expect(label).toEqual(mockCreatedLabel);
+      expect(mockTodoistApi.addLabel).toHaveBeenCalledWith({
+        name: "Null Order Label",
+        color: undefined,
+        order: null,
+        isFavorite: undefined,
+      });
     });
   });
 });

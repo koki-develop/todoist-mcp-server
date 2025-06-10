@@ -1,4 +1,5 @@
 import type {
+  Label,
   PersonalProject,
   Section,
   Task,
@@ -6,7 +7,7 @@ import type {
 } from "@doist/todoist-api-typescript";
 
 export type Project = PersonalProject | WorkspaceProject;
-export type { Task, Section };
+export type { Task, Section, Label };
 
 export interface CreateProjectParams {
   name: string;
@@ -76,4 +77,11 @@ export interface CreateSectionParams {
 
 export interface UpdateSectionParams {
   name: string;
+}
+
+export interface CreateLabelParams {
+  name: string;
+  color?: string;
+  order?: number | null;
+  isFavorite?: boolean;
 }

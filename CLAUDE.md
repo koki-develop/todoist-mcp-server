@@ -58,7 +58,8 @@ src/              # Source code
 │       ├── index.ts      # registerTools() aggregator
 │       ├── projects.ts   # Project tools (CRUD + read operations)
 │       ├── sections.ts   # Section tools (CRUD + read operations)
-│       └── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
+│       ├── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
+│       └── labels.ts     # Label tools (create operations)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -88,7 +89,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Todoist Integration Layer**: Complete `TodoistClient` class in `src/lib/todoist/client.ts`:
 
-- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, and task CRUD operations
+- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, task, and label CRUD operations
 - **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, and `getTasks()` methods using cursor-based iteration
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
@@ -97,8 +98,9 @@ Dockerfile        # Multi-stage Docker build with Bun
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
+  - **Label Tools**: `create_label`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
-- **Architecture**: Extensible structure for adding labels, comments features
+- **Architecture**: Extensible structure for adding additional label operations, comments features
 
 ## Development Tooling
 
@@ -121,7 +123,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Testing**: Uses bun:test with Jest-compatible API
 - Mock functions and module mocking via `mock()` and `mock.module()`
-- Factory functions for creating test data (e.g., `createMockProject()`, `createMockSection()`, `createMockTask()`)
+- Factory functions for creating test data (e.g., `createMockProject()`, `createMockSection()`, `createMockTask()`, `createMockLabel()`)
 - Test file naming convention: `*.spec.ts`
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 - Run single test file: `bun test src/lib/todoist/client.spec.ts`
@@ -216,6 +218,7 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
    - **Projects**: `get_projects`, `create_project`, `delete_project`  
    - **Sections**: `create_section`, `get_sections`
    - **Tasks**: `create_task`, `get_tasks`, `close_task`
+   - **Labels**: `create_label`
 4. **Verify Results**: Check Japanese text support, natural language date parsing, and hierarchical data structure
 
-This provides comprehensive validation of all 17 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 18 MCP tools through automated browser interaction.
