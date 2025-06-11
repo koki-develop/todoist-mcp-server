@@ -37,6 +37,7 @@ COPY --from=build /usr/src/app/package.json .
 
 # Add OCI source label for better image metadata
 LABEL org.opencontainers.image.source=https://github.com/koki-develop/todoist-mcp-server
+LABEL org.opencontainers.image.description="Todoist MCP server for integrating Todoist with AI assistants through the Model Context Protocol"
 
 # Run as non-root user
 USER bun
