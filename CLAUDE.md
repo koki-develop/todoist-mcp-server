@@ -80,7 +80,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Entry Point**: `src/index.ts` is minimal and delegates to `src/server.ts`
 - **Server Initialization**: `src/server.ts` handles McpServer setup, environment variables, and tool registration
 - **Tool Registration**: Modular function (`registerTools`) aggregates feature-specific handlers
-- **Colocation Principle**: Schemas are co-located with their usage in tool files rather than centralized
+- **Centralized Schema System**: All Zod schemas are centralized in `src/lib/todoist/types.ts` with TypeScript types inferred via z.infer
 
 **MCP Server Structure**: Uses `McpServer` (high-level API) from `@modelcontextprotocol/sdk` instead of low-level `Server` class:
 
@@ -162,13 +162,15 @@ Dockerfile        # Multi-stage Docker build with Bun
 - `get_tasks` and `get_task` replace the previous `todoist://tasks` resources with added filtering options
 - `get_labels` and `get_label` provide comprehensive label management functionality
 
-**Colocation Pattern**: Schemas are defined within the same file as their usage (tools) rather than centralized, improving maintainability and reducing coupling.
+**Unified Schema Architecture**: All Zod schemas and TypeScript types are centralized in `src/lib/todoist/types.ts` for consistency and maintainability. This provides a single source of truth with z.infer for automatic type synchronization.
 
 **MCP Tool Development Pattern**: For server.tool() implementations:
+- Import parameter schemas from `src/lib/todoist/types.ts` (e.g., `updateProjectParamsSchema`)
 - Use `ZodRawShape` (object with Zod schemas) instead of `ZodObject` for parameter schemas
-- Add comprehensive `.describe()` annotations for all parameters for better UX
+- Leverage centralized schemas with comprehensive `.describe()` annotations for better UX
 - Include detailed tool descriptions explaining functionality, parameters, and safety warnings
 - Return structured responses with both success messages and complete object data
+- TodoistClient methods follow unified `(params: Params)` pattern for consistency
 
 **API Parameter Mapping**: When interfacing with Todoist API:
 - Handle parameter transformations in TodoistClient (e.g., `childOrder` → `order`)
@@ -201,9 +203,10 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Extension Strategy**: New features should follow the pattern:
 - Add new files to `src/mcp/tools/` 
-- Co-locate Zod schemas with their usage
-- Register in `src/mcp/tools/index.ts` aggregator
-- Follow existing tool patterns for consistent API design
+- Define Zod schemas in `src/lib/todoist/types.ts` following `...ParamsSchema` naming convention
+- Export corresponding TypeScript types using z.infer
+- Register tools in `src/mcp/tools/index.ts` aggregator
+- Follow existing tool patterns for consistent API design with unified `(params: Params)` interface
 
 **Commit Workflow**: All commits automatically run Biome formatting via git hooks. Keep commits small and atomic - the project follows a pattern of committing tooling/dependency changes separately from feature implementation. Prefer `chore:` for skeleton implementations that don't yet provide user-facing functionality.
 
