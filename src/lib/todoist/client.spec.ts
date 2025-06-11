@@ -168,6 +168,7 @@ const mockTodoistApi = {
   updateComment: mock(),
   quickAddTask: mock(),
   getComments: mock(),
+  moveTasks: mock(),
 };
 
 // Mock the @doist/todoist-api-typescript module to return our mock API
@@ -207,6 +208,7 @@ describe("TodoistClient", () => {
     mockTodoistApi.updateComment.mockClear();
     mockTodoistApi.quickAddTask.mockClear();
     mockTodoistApi.getComments.mockClear();
+    mockTodoistApi.moveTasks.mockClear();
   });
 
   describe("getProjects", () => {
@@ -1361,6 +1363,75 @@ describe("TodoistClient", () => {
       expect(comment).toEqual(mockUpdatedComment);
       expect(mockTodoistApi.updateComment).toHaveBeenCalledWith("comment123", {
         content: "Updated comment content",
+      });
+    });
+  });
+
+  describe("moveTasksToProject", () => {
+    test("should move tasks to a different project", async () => {
+      const movedTask1 = createMockTask({
+        id: "task1",
+        content: "Task 1",
+        projectId: "project2",
+      });
+      const movedTask2 = createMockTask({
+        id: "task2",
+        content: "Task 2",
+        projectId: "project2",
+      });
+
+      mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask1, movedTask2]);
+
+      const result = await client.moveTasksToProject(["task1", "task2"], {
+        projectId: "project2",
+      });
+
+      expect(result).toEqual([movedTask1, movedTask2]);
+      expect(mockTodoistApi.moveTasks).toHaveBeenCalledWith(
+        ["task1", "task2"],
+        { projectId: "project2" },
+      );
+    });
+  });
+
+  describe("moveTasksToSection", () => {
+    test("should move tasks to a different section", async () => {
+      const movedTask = createMockTask({
+        id: "task1",
+        content: "Task to move",
+        sectionId: "section2",
+      });
+
+      mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask]);
+
+      const result = await client.moveTasksToSection(["task1"], {
+        sectionId: "section2",
+      });
+
+      expect(result).toEqual([movedTask]);
+      expect(mockTodoistApi.moveTasks).toHaveBeenCalledWith(["task1"], {
+        sectionId: "section2",
+      });
+    });
+  });
+
+  describe("moveTasksToParent", () => {
+    test("should move tasks to become subtasks of a parent", async () => {
+      const movedTask = createMockTask({
+        id: "task1",
+        content: "Task to become subtask",
+        parentId: "parent123",
+      });
+
+      mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask]);
+
+      const result = await client.moveTasksToParent(["task1"], {
+        parentId: "parent123",
+      });
+
+      expect(result).toEqual([movedTask]);
+      expect(mockTodoistApi.moveTasks).toHaveBeenCalledWith(["task1"], {
+        parentId: "parent123",
       });
     });
   });
