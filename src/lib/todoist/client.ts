@@ -1,5 +1,6 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
+  CloseTaskParams,
   Comment,
   CreateLabelParams,
   CreateProjectCommentParams,
@@ -7,7 +8,18 @@ import type {
   CreateSectionParams,
   CreateTaskCommentParams,
   CreateTaskParams,
+  DeleteCommentParams,
+  DeleteLabelParams,
+  DeleteProjectParams,
+  DeleteSectionParams,
+  DeleteTaskParams,
+  GetLabelParams,
+  GetProjectCommentsParams,
+  GetProjectParams,
+  GetSectionParams,
   GetSectionsParams,
+  GetTaskCommentsParams,
+  GetTaskParams,
   GetTasksParams,
   Label,
   MoveTasksToParentParams,
@@ -15,6 +27,7 @@ import type {
   MoveTasksToSectionParams,
   Project,
   QuickAddTaskParams,
+  ReopenTaskParams,
   Section,
   Task,
   UpdateCommentParams,
@@ -44,8 +57,8 @@ export class TodoistClient {
     return projects;
   }
 
-  async getProject(id: string): Promise<Project> {
-    return this._api.getProject(id);
+  async getProject(params: GetProjectParams): Promise<Project> {
+    return this._api.getProject(params.id);
   }
 
   async createProject(params: CreateProjectParams): Promise<Project> {
@@ -58,11 +71,8 @@ export class TodoistClient {
     });
   }
 
-  async updateProject(
-    id: string,
-    params: UpdateProjectParams,
-  ): Promise<Project> {
-    return this._api.updateProject(id, {
+  async updateProject(params: UpdateProjectParams): Promise<Project> {
+    return this._api.updateProject(params.id, {
       name: params.name,
       color: params.color,
       isFavorite: params.isFavorite,
@@ -70,8 +80,8 @@ export class TodoistClient {
     });
   }
 
-  async deleteProject(id: string): Promise<boolean> {
-    return this._api.deleteProject(id);
+  async deleteProject(params: DeleteProjectParams): Promise<boolean> {
+    return this._api.deleteProject(params.id);
   }
 
   async getTasks(params?: GetTasksParams): Promise<Task[]> {
@@ -87,8 +97,8 @@ export class TodoistClient {
     return tasks;
   }
 
-  async getTask(id: string): Promise<Task> {
-    return this._api.getTask(id);
+  async getTask(params: GetTaskParams): Promise<Task> {
+    return this._api.getTask(params.id);
   }
 
   async createTask(params: CreateTaskParams): Promise<Task> {
@@ -107,10 +117,10 @@ export class TodoistClient {
     return this._api.addTask(apiParams);
   }
 
-  async updateTask(id: string, params: UpdateTaskParams): Promise<Task> {
+  async updateTask(params: UpdateTaskParams): Promise<Task> {
     // Convert our params to match API requirements
     // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
-    const apiParams = { ...params } as any;
+    const { id, ...apiParams } = params as any;
     // API requires either dueDate OR dueDatetime, not both
     if (apiParams.dueDate && apiParams.dueDatetime) {
       apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
@@ -118,16 +128,16 @@ export class TodoistClient {
     return this._api.updateTask(id, apiParams);
   }
 
-  async deleteTask(id: string): Promise<boolean> {
-    return this._api.deleteTask(id);
+  async deleteTask(params: DeleteTaskParams): Promise<boolean> {
+    return this._api.deleteTask(params.id);
   }
 
-  async closeTask(id: string): Promise<boolean> {
-    return this._api.closeTask(id);
+  async closeTask(params: CloseTaskParams): Promise<boolean> {
+    return this._api.closeTask(params.id);
   }
 
-  async reopenTask(id: string): Promise<boolean> {
-    return this._api.reopenTask(id);
+  async reopenTask(params: ReopenTaskParams): Promise<boolean> {
+    return this._api.reopenTask(params.id);
   }
 
   async getSections(params: GetSectionsParams): Promise<Section[]> {
@@ -146,8 +156,8 @@ export class TodoistClient {
     return sections;
   }
 
-  async getSection(id: string): Promise<Section> {
-    return this._api.getSection(id);
+  async getSection(params: GetSectionParams): Promise<Section> {
+    return this._api.getSection(params.id);
   }
 
   async createSection(params: CreateSectionParams): Promise<Section> {
@@ -158,17 +168,14 @@ export class TodoistClient {
     });
   }
 
-  async updateSection(
-    id: string,
-    params: UpdateSectionParams,
-  ): Promise<Section> {
-    return this._api.updateSection(id, {
+  async updateSection(params: UpdateSectionParams): Promise<Section> {
+    return this._api.updateSection(params.id, {
       name: params.name,
     });
   }
 
-  async deleteSection(id: string): Promise<boolean> {
-    return this._api.deleteSection(id);
+  async deleteSection(params: DeleteSectionParams): Promise<boolean> {
+    return this._api.deleteSection(params.id);
   }
 
   async createLabel(params: CreateLabelParams): Promise<Label> {
@@ -180,8 +187,8 @@ export class TodoistClient {
     });
   }
 
-  async updateLabel(id: string, params: UpdateLabelParams): Promise<Label> {
-    return this._api.updateLabel(id, {
+  async updateLabel(params: UpdateLabelParams): Promise<Label> {
+    return this._api.updateLabel(params.id, {
       name: params.name,
       color: params.color,
       order: params.order,
@@ -202,12 +209,12 @@ export class TodoistClient {
     return labels;
   }
 
-  async getLabel(id: string): Promise<Label> {
-    return this._api.getLabel(id);
+  async getLabel(params: GetLabelParams): Promise<Label> {
+    return this._api.getLabel(params.id);
   }
 
-  async deleteLabel(id: string): Promise<boolean> {
-    return this._api.deleteLabel(id);
+  async deleteLabel(params: DeleteLabelParams): Promise<boolean> {
+    return this._api.deleteLabel(params.id);
   }
 
   async createTaskComment(params: CreateTaskCommentParams): Promise<Comment> {
@@ -238,21 +245,21 @@ export class TodoistClient {
     });
   }
 
-  async updateComment(
-    id: string,
-    params: UpdateCommentParams,
-  ): Promise<Comment> {
-    return this._api.updateComment(id, {
+  async updateComment(params: UpdateCommentParams): Promise<Comment> {
+    return this._api.updateComment(params.id, {
       content: params.content,
     });
   }
 
-  async getTaskComments(taskId: string): Promise<Comment[]> {
+  async getTaskComments(params: GetTaskCommentsParams): Promise<Comment[]> {
     const comments: Comment[] = [];
     let cursor: string | null = null;
 
     do {
-      const response = await this._api.getComments({ taskId, cursor });
+      const response = await this._api.getComments({
+        taskId: params.taskId,
+        cursor,
+      });
       comments.push(...response.results);
       cursor = response.nextCursor;
     } while (cursor);
@@ -260,12 +267,17 @@ export class TodoistClient {
     return comments;
   }
 
-  async getProjectComments(projectId: string): Promise<Comment[]> {
+  async getProjectComments(
+    params: GetProjectCommentsParams,
+  ): Promise<Comment[]> {
     const comments: Comment[] = [];
     let cursor: string | null = null;
 
     do {
-      const response = await this._api.getComments({ projectId, cursor });
+      const response = await this._api.getComments({
+        projectId: params.projectId,
+        cursor,
+      });
       comments.push(...response.results);
       cursor = response.nextCursor;
     } while (cursor);
@@ -273,28 +285,19 @@ export class TodoistClient {
     return comments;
   }
 
-  async deleteComment(id: string): Promise<boolean> {
-    return this._api.deleteComment(id);
+  async deleteComment(params: DeleteCommentParams): Promise<boolean> {
+    return this._api.deleteComment(params.id);
   }
 
-  async moveTasksToProject(
-    ids: string[],
-    params: MoveTasksToProjectParams,
-  ): Promise<Task[]> {
-    return this._api.moveTasks(ids, { projectId: params.projectId });
+  async moveTasksToProject(params: MoveTasksToProjectParams): Promise<Task[]> {
+    return this._api.moveTasks(params.ids, { projectId: params.projectId });
   }
 
-  async moveTasksToSection(
-    ids: string[],
-    params: MoveTasksToSectionParams,
-  ): Promise<Task[]> {
-    return this._api.moveTasks(ids, { sectionId: params.sectionId });
+  async moveTasksToSection(params: MoveTasksToSectionParams): Promise<Task[]> {
+    return this._api.moveTasks(params.ids, { sectionId: params.sectionId });
   }
 
-  async moveTasksToParent(
-    ids: string[],
-    params: MoveTasksToParentParams,
-  ): Promise<Task[]> {
-    return this._api.moveTasks(ids, { parentId: params.parentId });
+  async moveTasksToParent(params: MoveTasksToParentParams): Promise<Task[]> {
+    return this._api.moveTasks(params.ids, { parentId: params.parentId });
   }
 }

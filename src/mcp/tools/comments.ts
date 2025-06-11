@@ -1,64 +1,19 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import type { TodoistClient } from "../../lib/todoist/client";
-
-// Tool-related schemas (used only in this file)
-const createTaskCommentSchema = {
-  content: z.string().min(1).describe("The text content of the comment"),
-  taskId: z.string().min(1).describe("ID of the task to comment on"),
-  attachment: z
-    .object({
-      fileName: z.string().optional().describe("Name of the attached file"),
-      fileUrl: z.string().describe("URL of the file to attach"),
-      fileType: z.string().optional().describe("MIME type of the file"),
-      resourceType: z.string().optional().describe("Type of resource"),
-    })
-    .optional()
-    .describe("File attachment (optional)"),
-};
-
-const createProjectCommentSchema = {
-  content: z.string().min(1).describe("The text content of the comment"),
-  projectId: z.string().min(1).describe("ID of the project to comment on"),
-  attachment: z
-    .object({
-      fileName: z.string().optional().describe("Name of the attached file"),
-      fileUrl: z.string().describe("URL of the file to attach"),
-      fileType: z.string().optional().describe("MIME type of the file"),
-      resourceType: z.string().optional().describe("Type of resource"),
-    })
-    .optional()
-    .describe("File attachment (optional)"),
-};
-
-const updateCommentSchema = {
-  id: z.string().min(1).describe("ID of the comment to update"),
-  content: z.string().min(1).describe("New text content for the comment"),
-};
-
-const getTaskCommentsSchema = {
-  taskId: z
-    .string()
-    .min(1)
-    .describe("ID of the task to retrieve comments from"),
-};
-
-const getProjectCommentsSchema = {
-  projectId: z
-    .string()
-    .min(1)
-    .describe("ID of the project to retrieve comments from"),
-};
-
-const deleteCommentSchema = {
-  id: z.string().min(1).describe("ID of the comment to delete"),
-};
+import {
+  createProjectCommentParamsSchema,
+  createTaskCommentParamsSchema,
+  deleteCommentParamsSchema,
+  getProjectCommentsParamsSchema,
+  getTaskCommentsParamsSchema,
+  updateCommentParamsSchema,
+} from "../../lib/todoist/types";
 export function registerCommentTools(server: McpServer, client: TodoistClient) {
   // Create a new task comment
   server.tool(
     "create_task_comment",
     "Add a comment to a specific Todoist task. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.",
-    createTaskCommentSchema,
+    createTaskCommentParamsSchema.shape,
     async ({ content, taskId, attachment }) => {
       // Validate attachment if provided
       if (attachment && !attachment.fileUrl) {
@@ -90,7 +45,7 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "create_project_comment",
     "Add a comment to a specific Todoist project. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.",
-    createProjectCommentSchema,
+    createProjectCommentParamsSchema.shape,
     async ({ content, projectId, attachment }) => {
       // Validate attachment if provided
       if (attachment && !attachment.fileUrl) {
@@ -122,9 +77,9 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "update_comment",
     "Update the content of an existing comment in Todoist. This allows you to modify the text content of comments on tasks or projects. The comment's metadata such as posting time, author, and attachments are preserved. Returns the updated comment object with current content.",
-    updateCommentSchema,
-    async ({ id, content }) => {
-      const comment = await client.updateComment(id, { content });
+    updateCommentParamsSchema.shape,
+    async (params) => {
+      const comment = await client.updateComment(params);
 
       return {
         content: [
@@ -145,9 +100,9 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "get_task_comments",
     "Retrieve all comments associated with a specific Todoist task. Returns a comprehensive list of comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the task.",
-    getTaskCommentsSchema,
+    getTaskCommentsParamsSchema.shape,
     async ({ taskId }) => {
-      const comments = await client.getTaskComments(taskId);
+      const comments = await client.getTaskComments({ taskId });
 
       return {
         content: [
@@ -168,9 +123,9 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "get_project_comments",
     "Retrieve all comments associated with a specific Todoist project. Returns a comprehensive list of project-level comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the project.",
-    getProjectCommentsSchema,
+    getProjectCommentsParamsSchema.shape,
     async ({ projectId }) => {
-      const comments = await client.getProjectComments(projectId);
+      const comments = await client.getProjectComments({ projectId });
 
       return {
         content: [
@@ -191,9 +146,9 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "delete_comment",
     "Permanently delete a comment by its unique identifier. This action will remove the comment from its associated task or project. This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
-    deleteCommentSchema,
+    deleteCommentParamsSchema.shape,
     async ({ id }) => {
-      const success = await client.deleteComment(id);
+      const success = await client.deleteComment({ id });
 
       return {
         content: [
