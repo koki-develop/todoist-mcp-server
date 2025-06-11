@@ -106,6 +106,10 @@ export interface CreateCommentParams {
   };
 }
 
+export interface UpdateCommentParams {
+  content: string;
+}
+
 export interface QuickAddTaskParams {
   text: string;
   note?: string;
