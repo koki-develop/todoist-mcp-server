@@ -354,7 +354,6 @@ Permanently deletes a comment by its unique identifier. This action will remove 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`id`** | **Yes** | ID of the comment to delete |
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
