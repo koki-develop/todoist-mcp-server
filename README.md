@@ -86,6 +86,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`create_comment`](#create_comment)
   - [`get_task_comments`](#get_task_comments)
   - [`get_project_comments`](#get_project_comments)
+  - [`delete_comment`](#delete_comment)
 
 ### Projects
 
@@ -346,6 +347,13 @@ Retrieves all comments associated with a specific Todoist project. Returns a com
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`projectId`** | **Yes** | ID of the project to retrieve comments from |
+
+#### `delete_comment`
+Permanently deletes a comment by its unique identifier. This action will remove the comment from its associated task or project. **This operation cannot be undone, so use with caution.** Returns confirmation of successful deletion or failure notification.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`id`** | **Yes** | ID of the comment to delete |
 
 ## License
 

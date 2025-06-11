@@ -257,4 +257,8 @@ export class TodoistClient {
 
     return comments;
   }
+
+  async deleteComment(id: string): Promise<boolean> {
+    return this._api.deleteComment(id);
+  }
 }
