@@ -59,7 +59,9 @@ src/              # Source code
 │       ├── projects.ts   # Project tools (CRUD + read operations)
 │       ├── sections.ts   # Section tools (CRUD + read operations)
 │       ├── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
-│       └── labels.ts     # Label tools (create + update + individual/list read + delete operations)
+│       ├── labels.ts     # Label tools (create + update + individual/list read + delete operations)
+│       ├── comments.ts   # Comment tools (create + read with pagination)
+│       └── advanced.ts   # Advanced tools (natural language task creation)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -89,19 +91,23 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Todoist Integration Layer**: Complete `TodoistClient` class in `src/lib/todoist/client.ts`:
 
-- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, task, and label CRUD operations
-- **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, `getTasks()`, and `getLabels()` methods using cursor-based iteration
+- **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, task, label, and comment CRUD operations
+- **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, `getTasks()`, `getLabels()`, and `getTaskComments()` methods using cursor-based iteration
 - **Individual Retrieval**: Direct methods for getting individual items: `getProject()`, `getSection()`, `getTask()`, `getLabel()`
+- **Advanced Features**: Natural language task creation via `quickAddTask()` with intelligent parsing of dates, projects, labels, and priorities
+- **Comment Management**: Full comment support via `createComment()` and `getTaskComments()` with file attachment capabilities
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Tools**: Complete tools-only implementation with both read and write operations (22 total tools):
+- **Tools**: Complete tools-only implementation with both read and write operations (25 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`
   - **Label Tools**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
+  - **Comment Tools**: `create_comment`, `get_task_comments`
+  - **Advanced Tools**: `quick_add_task` (natural language processing)
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
-- **Architecture**: Extensible structure for adding additional label operations and comments features
+- **Architecture**: Extensible structure with full comment management and natural language task creation
 
 ## Development Tooling
 
@@ -124,11 +130,12 @@ Dockerfile        # Multi-stage Docker build with Bun
 
 **Testing**: Uses bun:test with Jest-compatible API
 - Mock functions and module mocking via `mock()` and `mock.module()`
-- Factory functions for creating test data (e.g., `createMockProject()`, `createMockSection()`, `createMockTask()`, `createMockLabel()`)
+- Factory functions for creating test data (e.g., `createMockProject()`, `createMockSection()`, `createMockTask()`, `createMockLabel()`, `createMockComment()`)
 - Test file naming convention: `*.spec.ts`
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 - Run single test file: `bun test src/lib/todoist/client.spec.ts`
 - Pagination testing pattern: mock multiple API responses with `nextCursor` for comprehensive coverage
+- Advanced feature testing: natural language parsing validation and comment management with attachments
 
 **CI/CD**: Comprehensive GitHub Actions workflows
 - **ci.yml**: lint, typecheck, test, build (with Bun executable test), and Docker container testing
@@ -221,6 +228,8 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
    - **Sections**: `create_section`, `get_sections`
    - **Tasks**: `create_task`, `get_tasks`, `close_task`
    - **Labels**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
-4. **Verify Results**: Check Japanese text support, natural language date parsing, and hierarchical data structure
+   - **Comments**: `create_comment`, `get_task_comments`
+   - **Advanced**: `quick_add_task` with natural language parsing
+4. **Verify Results**: Check Japanese text support, natural language date parsing, hierarchical data structure, and comment management
 
-This provides comprehensive validation of all 22 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 25 MCP tools through automated browser interaction.
