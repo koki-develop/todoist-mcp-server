@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.2.0...v0.3.0) (2025-06-11)
+
+
+### Features
+
+* implement create_comment tool for task and project comments ([#37](https://github.com/koki-develop/todoist-mcp-server/issues/37)) ([b215bea](https://github.com/koki-develop/todoist-mcp-server/commit/b215beaa30229f3c97d338f6703db6284f25f88f))
+* implement get_task_comments tool for task comment retrieval ([#40](https://github.com/koki-develop/todoist-mcp-server/issues/40)) ([b0ffe50](https://github.com/koki-develop/todoist-mcp-server/commit/b0ffe502f86ac9edf99d194b8614f910e3a9ec07))
+* implement quick_add_task tool for natural language task creation ([#38](https://github.com/koki-develop/todoist-mcp-server/issues/38)) ([df41ab6](https://github.com/koki-develop/todoist-mcp-server/commit/df41ab6fbbb9aa4b384b479bbf5b8391b2d57733))
+
+
+### Bug Fixes
+
+* add missing org.opencontainers.image.description label to Dockerfile ([#41](https://github.com/koki-develop/todoist-mcp-server/issues/41)) ([11e27c2](https://github.com/koki-develop/todoist-mcp-server/commit/11e27c2f4e5c415ecd15fead40251c7d31dd9b5d))
+
 ## [0.2.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.1.0...v0.2.0) (2025-06-10)
 
 
