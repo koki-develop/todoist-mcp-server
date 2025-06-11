@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.3.0...v0.4.0) (2025-06-11)
+
+
+### Features
+
+* add delete_comment tool for comment removal ([#43](https://github.com/koki-develop/todoist-mcp-server/issues/43)) ([8c77173](https://github.com/koki-develop/todoist-mcp-server/commit/8c7717327e446a65bb847b580a85c957cdb8c1ac))
+* add update_comment tool for comment modification ([#45](https://github.com/koki-develop/todoist-mcp-server/issues/45)) ([5ecd667](https://github.com/koki-develop/todoist-mcp-server/commit/5ecd667826ee7a7eaa0f2af7d4962523853cfbb3))
+* implement get_project_comments tool for project comment retrieval ([#42](https://github.com/koki-develop/todoist-mcp-server/issues/42)) ([993248f](https://github.com/koki-develop/todoist-mcp-server/commit/993248f01c28dd58131e39cebea70baeebd35015))
+* implement move tasks tools for bulk task movement ([#46](https://github.com/koki-develop/todoist-mcp-server/issues/46)) ([e6eb468](https://github.com/koki-develop/todoist-mcp-server/commit/e6eb46846c617ec26004e33b66b364725c33ac59))
+* separate create_comment into task and project specific tools ([#47](https://github.com/koki-develop/todoist-mcp-server/issues/47)) ([a96f65d](https://github.com/koki-develop/todoist-mcp-server/commit/a96f65d50bb496be40be739174807a929e0c324c))
+
 ## [0.3.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.2.0...v0.3.0) (2025-06-11)
 
 
