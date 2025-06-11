@@ -1,46 +1,19 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import type { TodoistClient } from "../../lib/todoist/client";
-
-// Tool-related schemas (used only in this file)
-const createSectionSchema = {
-  name: z.string().min(1).describe("Name of the section to create"),
-  projectId: z
-    .string()
-    .min(1)
-    .describe("ID of the project to create the section in"),
-  order: z
-    .number()
-    .optional()
-    .describe("Order of the section within the project (optional)"),
-};
-
-const updateSectionSchema = {
-  id: z.string().min(1).describe("ID of the section to update"),
-  name: z.string().min(1).describe("New name for the section"),
-};
-
-const deleteSectionSchema = {
-  id: z.string().min(1).describe("ID of the section to delete"),
-};
-
-const getSectionsSchema = {
-  projectId: z
-    .string()
-    .min(1)
-    .describe("ID of the project to retrieve sections from"),
-};
-
-const getSectionSchema = {
-  id: z.string().min(1).describe("ID of the section to retrieve"),
-};
+import {
+  createSectionParamsSchema,
+  deleteSectionParamsSchema,
+  getSectionParamsSchema,
+  getSectionsParamsSchema,
+  updateSectionParamsSchema,
+} from "../../lib/todoist/types";
 
 export function registerSectionTools(server: McpServer, client: TodoistClient) {
   // Create a new section
   server.tool(
     "create_section",
     "Create a new section within a Todoist project to organize tasks. Sections help categorize and group related tasks within a project. You can optionally specify the order to control where the section appears in the project hierarchy. Returns the complete section object with all metadata upon successful creation.",
-    createSectionSchema,
+    createSectionParamsSchema.shape,
     async ({ name, projectId, order }) => {
       const section = await client.createSection({
         name,
@@ -67,11 +40,10 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "update_section",
     "Modify the name of an existing Todoist section. Currently, only the section name can be updated. The section will maintain its position, project assignment, and all associated tasks. Returns the updated section object with current metadata.",
-    updateSectionSchema,
-    async ({ id, name }) => {
-      const section = await client.updateSection(id, {
-        name,
-      });
+    updateSectionParamsSchema.shape,
+    async (params) => {
+      const { id, ...updateData } = params;
+      const section = await client.updateSection(id, updateData);
 
       return {
         content: [
@@ -92,7 +64,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "delete_section",
     "Permanently delete a Todoist section by its unique identifier. This action will remove the section and move any tasks in this section to the project's main area (no section). This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
-    deleteSectionSchema,
+    deleteSectionParamsSchema.shape,
     async ({ id }) => {
       const success = await client.deleteSection(id);
 
@@ -113,7 +85,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "get_sections",
     "Retrieve all sections within a specific Todoist project. Returns a comprehensive list of sections with their metadata such as name, order, creation and update timestamps, and status information. Sections are returned in their display order within the project.",
-    getSectionsSchema,
+    getSectionsParamsSchema.shape,
     async ({ projectId }) => {
       const sections = await client.getSections({ projectId });
 
@@ -136,7 +108,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
   server.tool(
     "get_section",
     "Access detailed information for a specific Todoist section using its unique identifier. Provides complete section metadata including name, project assignment, order position, timestamps, and status flags.",
-    getSectionSchema,
+    getSectionParamsSchema.shape,
     async ({ id }) => {
       const section = await client.getSection(id);
 

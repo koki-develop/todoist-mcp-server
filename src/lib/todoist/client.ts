@@ -10,9 +10,9 @@ import type {
   GetSectionsParams,
   GetTasksParams,
   Label,
-  MoveTasksToParentParams,
-  MoveTasksToProjectParams,
-  MoveTasksToSectionParams,
+  MoveTasksToParentClientParams,
+  MoveTasksToProjectClientParams,
+  MoveTasksToSectionClientParams,
   Project,
   QuickAddTaskParams,
   Section,
@@ -279,21 +279,21 @@ export class TodoistClient {
 
   async moveTasksToProject(
     ids: string[],
-    params: MoveTasksToProjectParams,
+    params: MoveTasksToProjectClientParams,
   ): Promise<Task[]> {
     return this._api.moveTasks(ids, { projectId: params.projectId });
   }
 
   async moveTasksToSection(
     ids: string[],
-    params: MoveTasksToSectionParams,
+    params: MoveTasksToSectionClientParams,
   ): Promise<Task[]> {
     return this._api.moveTasks(ids, { sectionId: params.sectionId });
   }
 
   async moveTasksToParent(
     ids: string[],
-    params: MoveTasksToParentParams,
+    params: MoveTasksToParentClientParams,
   ): Promise<Task[]> {
     return this._api.moveTasks(ids, { parentId: params.parentId });
   }
