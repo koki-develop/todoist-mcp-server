@@ -2,10 +2,11 @@ import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { TodoistClient } from "./client";
 import type {
   Comment,
-  CreateCommentParams,
   CreateLabelParams,
+  CreateProjectCommentParams,
   CreateProjectParams,
   CreateSectionParams,
+  CreateTaskCommentParams,
   CreateTaskParams,
   GetSectionsParams,
   GetTasksParams,
@@ -908,7 +909,7 @@ describe("TodoistClient", () => {
     });
   });
 
-  describe("createComment", () => {
+  describe("createTaskComment", () => {
     test("should create a comment for a task", async () => {
       const mockCreatedComment = createMockComment({
         id: "comment123",
@@ -919,49 +920,22 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.addComment.mockResolvedValueOnce(mockCreatedComment);
 
-      const params: CreateCommentParams = {
+      const params: CreateTaskCommentParams = {
         content: "This is a test comment",
         taskId: "task1",
       };
 
-      const comment = await client.createComment(params);
+      const comment = await client.createTaskComment(params);
 
       expect(comment).toEqual(mockCreatedComment);
       expect(mockTodoistApi.addComment).toHaveBeenCalledWith({
         content: "This is a test comment",
         taskId: "task1",
-        projectId: undefined,
         attachment: undefined,
       });
     });
 
-    test("should create a comment for a project", async () => {
-      const mockCreatedComment = createMockComment({
-        id: "comment456",
-        content: "Project comment",
-        taskId: undefined,
-        projectId: "project1",
-      });
-
-      mockTodoistApi.addComment.mockResolvedValueOnce(mockCreatedComment);
-
-      const params: CreateCommentParams = {
-        content: "Project comment",
-        projectId: "project1",
-      };
-
-      const comment = await client.createComment(params);
-
-      expect(comment).toEqual(mockCreatedComment);
-      expect(mockTodoistApi.addComment).toHaveBeenCalledWith({
-        content: "Project comment",
-        taskId: undefined,
-        projectId: "project1",
-        attachment: undefined,
-      });
-    });
-
-    test("should create a comment with attachment", async () => {
+    test("should create a task comment with attachment", async () => {
       const attachment = {
         fileName: "test.pdf",
         fileUrl: "https://example.com/test.pdf",
@@ -984,19 +958,84 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.addComment.mockResolvedValueOnce(mockCreatedComment);
 
-      const params: CreateCommentParams = {
+      const params: CreateTaskCommentParams = {
         content: "Comment with attachment",
         taskId: "task1",
         attachment,
       };
 
-      const comment = await client.createComment(params);
+      const comment = await client.createTaskComment(params);
 
       expect(comment).toEqual(mockCreatedComment);
       expect(mockTodoistApi.addComment).toHaveBeenCalledWith({
         content: "Comment with attachment",
         taskId: "task1",
-        projectId: undefined,
+        attachment,
+      });
+    });
+  });
+
+  describe("createProjectComment", () => {
+    test("should create a comment for a project", async () => {
+      const mockCreatedComment = createMockComment({
+        id: "comment456",
+        content: "Project comment",
+        taskId: undefined,
+        projectId: "project1",
+      });
+
+      mockTodoistApi.addComment.mockResolvedValueOnce(mockCreatedComment);
+
+      const params: CreateProjectCommentParams = {
+        content: "Project comment",
+        projectId: "project1",
+      };
+
+      const comment = await client.createProjectComment(params);
+
+      expect(comment).toEqual(mockCreatedComment);
+      expect(mockTodoistApi.addComment).toHaveBeenCalledWith({
+        content: "Project comment",
+        projectId: "project1",
+        attachment: undefined,
+      });
+    });
+
+    test("should create a project comment with attachment", async () => {
+      const attachment = {
+        fileName: "test.pdf",
+        fileUrl: "https://example.com/test.pdf",
+        fileType: "application/pdf",
+        resourceType: "file",
+      };
+
+      const mockCreatedComment = createMockComment({
+        id: "comment999",
+        content: "Project comment with attachment",
+        taskId: undefined,
+        projectId: "project1",
+        fileAttachment: {
+          resourceType: "file",
+          fileName: "test.pdf",
+          fileUrl: "https://example.com/test.pdf",
+          fileType: "application/pdf",
+        },
+      });
+
+      mockTodoistApi.addComment.mockResolvedValueOnce(mockCreatedComment);
+
+      const params: CreateProjectCommentParams = {
+        content: "Project comment with attachment",
+        projectId: "project1",
+        attachment,
+      };
+
+      const comment = await client.createProjectComment(params);
+
+      expect(comment).toEqual(mockCreatedComment);
+      expect(mockTodoistApi.addComment).toHaveBeenCalledWith({
+        content: "Project comment with attachment",
+        projectId: "project1",
         attachment,
       });
     });
