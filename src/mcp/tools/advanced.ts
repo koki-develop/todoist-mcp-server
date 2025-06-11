@@ -32,6 +32,28 @@ const quickAddTaskSchema = {
     ),
 };
 
+const moveTasksSchema = {
+  ids: z.array(z.string().min(1)).min(1).describe("Array of task IDs to move"),
+  projectId: z
+    .string()
+    .optional()
+    .describe(
+      "ID of destination project (mutually exclusive with sectionId and parentId)",
+    ),
+  sectionId: z
+    .string()
+    .optional()
+    .describe(
+      "ID of destination section (mutually exclusive with projectId and parentId)",
+    ),
+  parentId: z
+    .string()
+    .optional()
+    .describe(
+      "ID of parent task for creating subtasks (mutually exclusive with projectId and sectionId)",
+    ),
+};
+
 export function registerAdvancedTools(
   server: McpServer,
   client: TodoistClient,
@@ -59,6 +81,50 @@ export function registerAdvancedTools(
           {
             type: "text",
             text: JSON.stringify(task, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Move multiple tasks to a different location
+  server.tool(
+    "move_tasks",
+    "Move multiple tasks to a different location within Todoist. You can move tasks to a different project, section within a project, or make them subtasks of another task. Exactly one destination must be specified (project, section, or parent task). Returns the updated task objects after successful movement.",
+    moveTasksSchema,
+    async ({ ids, projectId, sectionId, parentId }) => {
+      // Validate exactly one destination is specified
+      const destinations = [projectId, sectionId, parentId].filter(Boolean);
+      if (destinations.length !== 1) {
+        throw new Error(
+          "Exactly one destination must be specified: projectId, sectionId, or parentId",
+        );
+      }
+
+      // Build moveParams with only the defined destination
+      const moveParams = projectId
+        ? { projectId }
+        : sectionId
+          ? { sectionId }
+          : { parentId: parentId as string }; // We already validated exactly one is provided
+      const movedTasks = await client.moveTasks(ids, moveParams);
+
+      const destinationType = projectId
+        ? "project"
+        : sectionId
+          ? "section"
+          : "parent task";
+      const destinationId = projectId || sectionId || parentId;
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Successfully moved ${movedTasks.length} task(s) to ${destinationType} ${destinationId}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(movedTasks, null, 2),
           },
         ],
       };

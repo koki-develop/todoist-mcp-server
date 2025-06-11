@@ -9,6 +9,9 @@ import type {
   GetSectionsParams,
   GetTasksParams,
   Label,
+  MoveTasksToParentParams,
+  MoveTasksToProjectParams,
+  MoveTasksToSectionParams,
   Project,
   QuickAddTaskParams,
   Section,
@@ -270,5 +273,26 @@ export class TodoistClient {
 
   async deleteComment(id: string): Promise<boolean> {
     return this._api.deleteComment(id);
+  }
+
+  async moveTasksToProject(
+    ids: string[],
+    params: MoveTasksToProjectParams,
+  ): Promise<Task[]> {
+    return this._api.moveTasks(ids, { projectId: params.projectId });
+  }
+
+  async moveTasksToSection(
+    ids: string[],
+    params: MoveTasksToSectionParams,
+  ): Promise<Task[]> {
+    return this._api.moveTasks(ids, { sectionId: params.sectionId });
+  }
+
+  async moveTasksToParent(
+    ids: string[],
+    params: MoveTasksToParentParams,
+  ): Promise<Task[]> {
+    return this._api.moveTasks(ids, { parentId: params.parentId });
   }
 }
