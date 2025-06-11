@@ -244,4 +244,17 @@ export class TodoistClient {
 
     return comments;
   }
+
+  async getProjectComments(projectId: string): Promise<Comment[]> {
+    const comments: Comment[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getComments({ projectId, cursor });
+      comments.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return comments;
+  }
 }
