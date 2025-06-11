@@ -72,12 +72,11 @@ export class TodoistClient {
   }
 
   async updateProject(params: UpdateProjectParams): Promise<Project> {
-    const { id, ...updateData } = params;
-    return this._api.updateProject(id, {
-      name: updateData.name,
-      color: updateData.color,
-      isFavorite: updateData.isFavorite,
-      viewStyle: updateData.viewStyle,
+    return this._api.updateProject(params.id, {
+      name: params.name,
+      color: params.color,
+      isFavorite: params.isFavorite,
+      viewStyle: params.viewStyle,
     });
   }
 
@@ -119,10 +118,9 @@ export class TodoistClient {
   }
 
   async updateTask(params: UpdateTaskParams): Promise<Task> {
-    const { id, ...updateData } = params;
     // Convert our params to match API requirements
     // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
-    const apiParams = { ...updateData } as any;
+    const { id, ...apiParams } = params as any;
     // API requires either dueDate OR dueDatetime, not both
     if (apiParams.dueDate && apiParams.dueDatetime) {
       apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
@@ -171,9 +169,8 @@ export class TodoistClient {
   }
 
   async updateSection(params: UpdateSectionParams): Promise<Section> {
-    const { id, ...updateData } = params;
-    return this._api.updateSection(id, {
-      name: updateData.name,
+    return this._api.updateSection(params.id, {
+      name: params.name,
     });
   }
 
@@ -191,12 +188,11 @@ export class TodoistClient {
   }
 
   async updateLabel(params: UpdateLabelParams): Promise<Label> {
-    const { id, ...updateData } = params;
-    return this._api.updateLabel(id, {
-      name: updateData.name,
-      color: updateData.color,
-      order: updateData.order,
-      isFavorite: updateData.isFavorite,
+    return this._api.updateLabel(params.id, {
+      name: params.name,
+      color: params.color,
+      order: params.order,
+      isFavorite: params.isFavorite,
     });
   }
 
@@ -250,9 +246,8 @@ export class TodoistClient {
   }
 
   async updateComment(params: UpdateCommentParams): Promise<Comment> {
-    const { id, ...updateData } = params;
-    return this._api.updateComment(id, {
-      content: updateData.content,
+    return this._api.updateComment(params.id, {
+      content: params.content,
     });
   }
 
@@ -295,17 +290,14 @@ export class TodoistClient {
   }
 
   async moveTasksToProject(params: MoveTasksToProjectParams): Promise<Task[]> {
-    const { ids, ...moveData } = params;
-    return this._api.moveTasks(ids, { projectId: moveData.projectId });
+    return this._api.moveTasks(params.ids, { projectId: params.projectId });
   }
 
   async moveTasksToSection(params: MoveTasksToSectionParams): Promise<Task[]> {
-    const { ids, ...moveData } = params;
-    return this._api.moveTasks(ids, { sectionId: moveData.sectionId });
+    return this._api.moveTasks(params.ids, { sectionId: params.sectionId });
   }
 
   async moveTasksToParent(params: MoveTasksToParentParams): Promise<Task[]> {
-    const { ids, ...moveData } = params;
-    return this._api.moveTasks(ids, { parentId: moveData.parentId });
+    return this._api.moveTasks(params.ids, { parentId: params.parentId });
   }
 }
