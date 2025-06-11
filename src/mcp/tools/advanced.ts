@@ -32,26 +32,19 @@ const quickAddTaskSchema = {
     ),
 };
 
-const moveTasksSchema = {
+const moveTasksToProjectSchema = {
   ids: z.array(z.string().min(1)).min(1).describe("Array of task IDs to move"),
-  projectId: z
-    .string()
-    .optional()
-    .describe(
-      "ID of destination project (mutually exclusive with sectionId and parentId)",
-    ),
-  sectionId: z
-    .string()
-    .optional()
-    .describe(
-      "ID of destination section (mutually exclusive with projectId and parentId)",
-    ),
-  parentId: z
-    .string()
-    .optional()
-    .describe(
-      "ID of parent task for creating subtasks (mutually exclusive with projectId and sectionId)",
-    ),
+  projectId: z.string().describe("ID of destination project"),
+};
+
+const moveTasksToSectionSchema = {
+  ids: z.array(z.string().min(1)).min(1).describe("Array of task IDs to move"),
+  sectionId: z.string().describe("ID of destination section"),
+};
+
+const moveTasksToParentSchema = {
+  ids: z.array(z.string().min(1)).min(1).describe("Array of task IDs to move"),
+  parentId: z.string().describe("ID of parent task to make these subtasks"),
 };
 
 export function registerAdvancedTools(
@@ -87,40 +80,65 @@ export function registerAdvancedTools(
     },
   );
 
-  // Move multiple tasks to a different location
+  // Move multiple tasks to a different project
   server.tool(
-    "move_tasks",
-    "Move multiple tasks to a different location within Todoist. You can move tasks to a different project, section within a project, or make them subtasks of another task. Exactly one destination must be specified (project, section, or parent task). Returns the updated task objects after successful movement.",
-    moveTasksSchema,
-    async ({ ids, projectId, sectionId, parentId }) => {
-      // Validate exactly one destination is specified
-      const destinations = [projectId, sectionId, parentId].filter(Boolean);
-      if (destinations.length !== 1) {
-        throw new Error(
-          "Exactly one destination must be specified: projectId, sectionId, or parentId",
-        );
-      }
-
-      // Build moveParams with only the defined destination
-      const moveParams = projectId
-        ? { projectId }
-        : sectionId
-          ? { sectionId }
-          : { parentId: parentId as string }; // We already validated exactly one is provided
-      const movedTasks = await client.moveTasks(ids, moveParams);
-
-      const destinationType = projectId
-        ? "project"
-        : sectionId
-          ? "section"
-          : "parent task";
-      const destinationId = projectId || sectionId || parentId;
+    "move_tasks_to_project",
+    "Move multiple tasks to a different project within Todoist. This will move the tasks from their current location to the specified project. Returns the updated task objects after successful movement.",
+    moveTasksToProjectSchema,
+    async ({ ids, projectId }) => {
+      const movedTasks = await client.moveTasksToProject(ids, { projectId });
 
       return {
         content: [
           {
             type: "text",
-            text: `Successfully moved ${movedTasks.length} task(s) to ${destinationType} ${destinationId}`,
+            text: `Successfully moved ${movedTasks.length} task(s) to project ${projectId}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(movedTasks, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Move multiple tasks to a different section
+  server.tool(
+    "move_tasks_to_section",
+    "Move multiple tasks to a different section within Todoist. This will move the tasks from their current location to the specified section. Returns the updated task objects after successful movement.",
+    moveTasksToSectionSchema,
+    async ({ ids, sectionId }) => {
+      const movedTasks = await client.moveTasksToSection(ids, { sectionId });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Successfully moved ${movedTasks.length} task(s) to section ${sectionId}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(movedTasks, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Move multiple tasks to become subtasks of a parent task
+  server.tool(
+    "move_tasks_to_parent",
+    "Move multiple tasks to become subtasks of another task within Todoist. This will make the specified tasks children of the parent task. Returns the updated task objects after successful movement.",
+    moveTasksToParentSchema,
+    async ({ ids, parentId }) => {
+      const movedTasks = await client.moveTasksToParent(ids, { parentId });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Successfully moved ${movedTasks.length} task(s) to become subtasks of parent task ${parentId}`,
           },
           {
             type: "text",

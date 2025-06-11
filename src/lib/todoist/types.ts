@@ -117,3 +117,15 @@ export interface QuickAddTaskParams {
   autoReminder?: boolean;
   meta?: boolean;
 }
+
+export interface MoveTasksToProjectParams {
+  projectId: string;
+}
+
+export interface MoveTasksToSectionParams {
+  sectionId: string;
+}
+
+export interface MoveTasksToParentParams {
+  parentId: string;
+}

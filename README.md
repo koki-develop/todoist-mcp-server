@@ -76,6 +76,9 @@ The server provides the following tools that AI assistants can use to interact w
   - [`delete_task`](#delete_task)
   - [`close_task`](#close_task)
   - [`reopen_task`](#reopen_task)
+  - [`move_tasks_to_project`](#move_tasks_to_project)
+  - [`move_tasks_to_section`](#move_tasks_to_section)
+  - [`move_tasks_to_parent`](#move_tasks_to_parent)
 - [Labels](#labels)
   - [`create_label`](#create_label)
   - [`update_label`](#update_label)
@@ -278,6 +281,30 @@ Reopens a previously completed Todoist task, returning it to active status. This
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`id`** | **Yes** | ID of the completed task to reopen |
+
+#### `move_tasks_to_project`
+Moves multiple tasks to a different project within Todoist. This tool enables efficient bulk task reorganization by changing the project assignment for multiple tasks simultaneously. All specified tasks will be moved from their current locations to the target project.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`ids`** | **Yes** | Array of task IDs to move to the project |
+| **`projectId`** | **Yes** | ID of the destination project |
+
+#### `move_tasks_to_section`
+Moves multiple tasks to a different section within Todoist. This tool allows bulk task organization by changing the section assignment for multiple tasks at once. All specified tasks will be moved from their current locations to the target section.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`ids`** | **Yes** | Array of task IDs to move to the section |
+| **`sectionId`** | **Yes** | ID of the destination section |
+
+#### `move_tasks_to_parent`
+Moves multiple tasks to become subtasks of another task within Todoist. This tool enables creation of task hierarchies by making multiple tasks children of a specified parent task. All specified tasks will be converted to subtasks of the target parent.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`ids`** | **Yes** | Array of task IDs to move as subtasks |
+| **`parentId`** | **Yes** | ID of the parent task |
 
 ### Labels
 
