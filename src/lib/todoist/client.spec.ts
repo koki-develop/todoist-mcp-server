@@ -163,6 +163,7 @@ const mockTodoistApi = {
   getLabels: mock(),
   getLabel: mock(),
   addComment: mock(),
+  deleteComment: mock(),
   quickAddTask: mock(),
   getComments: mock(),
 };
@@ -200,6 +201,7 @@ describe("TodoistClient", () => {
     mockTodoistApi.getLabels.mockClear();
     mockTodoistApi.getLabel.mockClear();
     mockTodoistApi.addComment.mockClear();
+    mockTodoistApi.deleteComment.mockClear();
     mockTodoistApi.quickAddTask.mockClear();
     mockTodoistApi.getComments.mockClear();
   });
@@ -992,6 +994,17 @@ describe("TodoistClient", () => {
         projectId: undefined,
         attachment,
       });
+    });
+  });
+
+  describe("deleteComment", () => {
+    test("should delete a comment", async () => {
+      mockTodoistApi.deleteComment.mockResolvedValueOnce(true);
+
+      const result = await client.deleteComment("comment123");
+
+      expect(result).toBe(true);
+      expect(mockTodoistApi.deleteComment).toHaveBeenCalledWith("comment123");
     });
   });
 

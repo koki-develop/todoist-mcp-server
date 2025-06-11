@@ -42,6 +42,9 @@ const getProjectCommentsSchema = {
     .describe("ID of the project to retrieve comments from"),
 };
 
+const deleteCommentSchema = {
+  id: z.string().min(1).describe("ID of the comment to delete"),
+};
 export function registerCommentTools(server: McpServer, client: TodoistClient) {
   // Create a new comment
   server.tool(
@@ -132,6 +135,27 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: JSON.stringify(comments, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Delete a comment
+  server.tool(
+    "delete_comment",
+    "Permanently delete a comment by its unique identifier. This action will remove the comment from its associated task or project. This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
+    deleteCommentSchema,
+    async ({ id }) => {
+      const success = await client.deleteComment(id);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: success
+              ? `Comment (ID: ${id}) deleted successfully`
+              : `Failed to delete comment (ID: ${id})`,
           },
         ],
       };
