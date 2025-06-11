@@ -86,7 +86,8 @@ The server provides the following tools that AI assistants can use to interact w
   - [`get_labels`](#get_labels)
   - [`delete_label`](#delete_label)
 - [Comments](#comments)
-  - [`create_comment`](#create_comment)
+  - [`create_task_comment`](#create_task_comment)
+  - [`create_project_comment`](#create_project_comment)
   - [`update_comment`](#update_comment)
   - [`get_task_comments`](#get_task_comments)
   - [`get_project_comments`](#get_project_comments)
@@ -348,14 +349,26 @@ Permanently deletes a personal label by its unique identifier. **WARNING: This a
 
 ### Comments
 
-#### `create_comment`
-Adds a comment to a Todoist task or project. Supports rich text content and optional file attachments. **You must specify either a task ID or project ID, but not both.** Returns the complete comment object with all metadata upon successful creation.
+#### `create_task_comment`
+Adds a comment to a specific Todoist task. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`content`** | **Yes** | The text content of the comment |
-| `taskId` | No | ID of the task to comment on (mutually exclusive with projectId) |
-| `projectId` | No | ID of the project to comment on (mutually exclusive with taskId) |
+| **`taskId`** | **Yes** | ID of the task to comment on |
+| `attachment` | No | File attachment object with URL and metadata |
+| `attachment.fileUrl` | **Yes*** | URL of the file to attach (*required if attachment is provided) |
+| `attachment.fileName` | No | Name of the attached file |
+| `attachment.fileType` | No | MIME type of the file |
+| `attachment.resourceType` | No | Type of resource |
+
+#### `create_project_comment`
+Adds a comment to a specific Todoist project. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`content`** | **Yes** | The text content of the comment |
+| **`projectId`** | **Yes** | ID of the project to comment on |
 | `attachment` | No | File attachment object with URL and metadata |
 | `attachment.fileUrl` | **Yes*** | URL of the file to attach (*required if attachment is provided) |
 | `attachment.fileName` | No | Name of the attached file |

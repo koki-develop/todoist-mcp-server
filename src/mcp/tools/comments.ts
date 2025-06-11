@@ -3,20 +3,23 @@ import { z } from "zod";
 import type { TodoistClient } from "../../lib/todoist/client";
 
 // Tool-related schemas (used only in this file)
-const createCommentSchema = {
+const createTaskCommentSchema = {
   content: z.string().min(1).describe("The text content of the comment"),
-  taskId: z
-    .string()
+  taskId: z.string().min(1).describe("ID of the task to comment on"),
+  attachment: z
+    .object({
+      fileName: z.string().optional().describe("Name of the attached file"),
+      fileUrl: z.string().describe("URL of the file to attach"),
+      fileType: z.string().optional().describe("MIME type of the file"),
+      resourceType: z.string().optional().describe("Type of resource"),
+    })
     .optional()
-    .describe(
-      "ID of the task to comment on (mutually exclusive with projectId)",
-    ),
-  projectId: z
-    .string()
-    .optional()
-    .describe(
-      "ID of the project to comment on (mutually exclusive with taskId)",
-    ),
+    .describe("File attachment (optional)"),
+};
+
+const createProjectCommentSchema = {
+  content: z.string().min(1).describe("The text content of the comment"),
+  projectId: z.string().min(1).describe("ID of the project to comment on"),
   attachment: z
     .object({
       fileName: z.string().optional().describe("Name of the attached file"),
@@ -51,45 +54,60 @@ const deleteCommentSchema = {
   id: z.string().min(1).describe("ID of the comment to delete"),
 };
 export function registerCommentTools(server: McpServer, client: TodoistClient) {
-  // Create a new comment
+  // Create a new task comment
   server.tool(
-    "create_comment",
-    "Add a comment to a Todoist task or project. Supports rich text content and optional file attachments. You must specify either a task ID or project ID, but not both. Returns the complete comment object with all metadata upon successful creation.",
-    createCommentSchema,
-    async ({ content, taskId, projectId, attachment }) => {
-      // Validate that exactly one of taskId or projectId is provided
-      if (!taskId && !projectId) {
-        throw new Error(
-          "Either taskId or projectId must be provided, but not both",
-        );
-      }
-      if (taskId && projectId) {
-        throw new Error(
-          "Cannot specify both taskId and projectId - they are mutually exclusive",
-        );
-      }
-
+    "create_task_comment",
+    "Add a comment to a specific Todoist task. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.",
+    createTaskCommentSchema,
+    async ({ content, taskId, attachment }) => {
       // Validate attachment if provided
       if (attachment && !attachment.fileUrl) {
         throw new Error("fileUrl is required when attachment is provided");
       }
 
-      const comment = await client.createComment({
+      const comment = await client.createTaskComment({
         content,
         taskId,
-        projectId,
         attachment,
       });
-
-      const target = taskId
-        ? `task (ID: ${taskId})`
-        : `project (ID: ${projectId})`;
 
       return {
         content: [
           {
             type: "text",
-            text: `Comment created successfully on ${target} with ID: ${comment.id}`,
+            text: `Comment created successfully on task (ID: ${taskId}) with ID: ${comment.id}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(comment, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Create a new project comment
+  server.tool(
+    "create_project_comment",
+    "Add a comment to a specific Todoist project. Supports rich text content and optional file attachments. Returns the complete comment object with all metadata upon successful creation.",
+    createProjectCommentSchema,
+    async ({ content, projectId, attachment }) => {
+      // Validate attachment if provided
+      if (attachment && !attachment.fileUrl) {
+        throw new Error("fileUrl is required when attachment is provided");
+      }
+
+      const comment = await client.createProjectComment({
+        content,
+        projectId,
+        attachment,
+      });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Comment created successfully on project (ID: ${projectId}) with ID: ${comment.id}`,
           },
           {
             type: "text",

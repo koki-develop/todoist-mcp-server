@@ -94,10 +94,20 @@ export interface UpdateLabelParams {
   isFavorite?: boolean;
 }
 
-export interface CreateCommentParams {
+export interface CreateTaskCommentParams {
   content: string;
-  taskId?: string;
-  projectId?: string;
+  taskId: string;
+  attachment?: {
+    fileName?: string;
+    fileUrl: string;
+    fileType?: string;
+    resourceType?: string;
+  };
+}
+
+export interface CreateProjectCommentParams {
+  content: string;
+  projectId: string;
   attachment?: {
     fileName?: string;
     fileUrl: string;
