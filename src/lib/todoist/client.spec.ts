@@ -14,6 +14,7 @@ import type {
   QuickAddTaskParams,
   Section,
   Task,
+  UpdateCommentParams,
   UpdateProjectParams,
   UpdateSectionParams,
   UpdateTaskParams,
@@ -164,6 +165,7 @@ const mockTodoistApi = {
   getLabel: mock(),
   addComment: mock(),
   deleteComment: mock(),
+  updateComment: mock(),
   quickAddTask: mock(),
   getComments: mock(),
 };
@@ -202,6 +204,7 @@ describe("TodoistClient", () => {
     mockTodoistApi.getLabel.mockClear();
     mockTodoistApi.addComment.mockClear();
     mockTodoistApi.deleteComment.mockClear();
+    mockTodoistApi.updateComment.mockClear();
     mockTodoistApi.quickAddTask.mockClear();
     mockTodoistApi.getComments.mockClear();
   });
@@ -1334,6 +1337,30 @@ describe("TodoistClient", () => {
       expect(mockTodoistApi.getComments).toHaveBeenCalledWith({
         projectId: "project789",
         cursor: null,
+      });
+    });
+  });
+
+  describe("updateComment", () => {
+    test("should update a comment", async () => {
+      const params: UpdateCommentParams = {
+        content: "Updated comment content",
+      };
+
+      const mockUpdatedComment = createMockComment({
+        id: "comment123",
+        content: "Updated comment content",
+        postedAt: "2023-01-01T12:30:00Z",
+        taskId: "task456",
+      });
+
+      mockTodoistApi.updateComment.mockResolvedValueOnce(mockUpdatedComment);
+
+      const comment = await client.updateComment("comment123", params);
+
+      expect(comment).toEqual(mockUpdatedComment);
+      expect(mockTodoistApi.updateComment).toHaveBeenCalledWith("comment123", {
+        content: "Updated comment content",
       });
     });
   });

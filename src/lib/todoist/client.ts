@@ -13,6 +13,7 @@ import type {
   QuickAddTaskParams,
   Section,
   Task,
+  UpdateCommentParams,
   UpdateLabelParams,
   UpdateProjectParams,
   UpdateSectionParams,
@@ -229,6 +230,15 @@ export class TodoistClient {
       reminder: params.reminder,
       autoReminder: params.autoReminder,
       meta: params.meta,
+    });
+  }
+
+  async updateComment(
+    id: string,
+    params: UpdateCommentParams,
+  ): Promise<Comment> {
+    return this._api.updateComment(id, {
+      content: params.content,
     });
   }
 

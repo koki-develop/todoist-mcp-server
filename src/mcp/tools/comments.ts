@@ -28,6 +28,11 @@ const createCommentSchema = {
     .describe("File attachment (optional)"),
 };
 
+const updateCommentSchema = {
+  id: z.string().min(1).describe("ID of the comment to update"),
+  content: z.string().min(1).describe("New text content for the comment"),
+};
+
 const getTaskCommentsSchema = {
   taskId: z
     .string()
@@ -85,6 +90,29 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: `Comment created successfully on ${target} with ID: ${comment.id}`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(comment, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Update an existing comment
+  server.tool(
+    "update_comment",
+    "Update the content of an existing comment in Todoist. This allows you to modify the text content of comments on tasks or projects. The comment's metadata such as posting time, author, and attachments are preserved. Returns the updated comment object with current content.",
+    updateCommentSchema,
+    async ({ id, content }) => {
+      const comment = await client.updateComment(id, { content });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Comment updated successfully with ID: ${comment.id}`,
           },
           {
             type: "text",
