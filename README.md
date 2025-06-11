@@ -84,6 +84,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`delete_label`](#delete_label)
 - [Comments](#comments)
   - [`create_comment`](#create_comment)
+  - [`update_comment`](#update_comment)
   - [`get_task_comments`](#get_task_comments)
   - [`get_project_comments`](#get_project_comments)
   - [`delete_comment`](#delete_comment)
@@ -333,6 +334,14 @@ Adds a comment to a Todoist task or project. Supports rich text content and opti
 | `attachment.fileName` | No | Name of the attached file |
 | `attachment.fileType` | No | MIME type of the file |
 | `attachment.resourceType` | No | Type of resource |
+
+#### `update_comment`
+Update the content of an existing comment in Todoist. This allows you to modify the text content of comments on tasks or projects. **The comment's metadata such as posting time, author, and attachments are preserved.** Returns the updated comment object with current content.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`id`** | **Yes** | ID of the comment to update |
+| **`content`** | **Yes** | New text content for the comment |
 
 #### `get_task_comments`
 Retrieves all comments associated with a specific Todoist task. Returns a comprehensive list of comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the task.
