@@ -19,6 +19,8 @@
       "Bash(gh pr view:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
       "Bash(git log:*)",
       "Bash(pinact:*)",
       "Bash(actionlint:*)",
