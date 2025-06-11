@@ -42,8 +42,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
     "Modify the name of an existing Todoist section. Currently, only the section name can be updated. The section will maintain its position, project assignment, and all associated tasks. Returns the updated section object with current metadata.",
     updateSectionParamsSchema.shape,
     async (params) => {
-      const { id, ...updateData } = params;
-      const section = await client.updateSection(id, updateData);
+      const section = await client.updateSection(params);
 
       return {
         content: [
@@ -66,7 +65,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
     "Permanently delete a Todoist section by its unique identifier. This action will remove the section and move any tasks in this section to the project's main area (no section). This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
     deleteSectionParamsSchema.shape,
     async ({ id }) => {
-      const success = await client.deleteSection(id);
+      const success = await client.deleteSection({ id });
 
       return {
         content: [
@@ -110,7 +109,7 @@ export function registerSectionTools(server: McpServer, client: TodoistClient) {
     "Access detailed information for a specific Todoist section using its unique identifier. Provides complete section metadata including name, project assignment, order position, timestamps, and status flags.",
     getSectionParamsSchema.shape,
     async ({ id }) => {
-      const section = await client.getSection(id);
+      const section = await client.getSection({ id });
 
       return {
         content: [

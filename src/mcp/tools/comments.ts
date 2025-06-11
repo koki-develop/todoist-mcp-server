@@ -79,8 +79,7 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
     "Update the content of an existing comment in Todoist. This allows you to modify the text content of comments on tasks or projects. The comment's metadata such as posting time, author, and attachments are preserved. Returns the updated comment object with current content.",
     updateCommentParamsSchema.shape,
     async (params) => {
-      const { id, ...updateData } = params;
-      const comment = await client.updateComment(id, updateData);
+      const comment = await client.updateComment(params);
 
       return {
         content: [
@@ -103,7 +102,7 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
     "Retrieve all comments associated with a specific Todoist task. Returns a comprehensive list of comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the task.",
     getTaskCommentsParamsSchema.shape,
     async ({ taskId }) => {
-      const comments = await client.getTaskComments(taskId);
+      const comments = await client.getTaskComments({ taskId });
 
       return {
         content: [
@@ -126,7 +125,7 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
     "Retrieve all comments associated with a specific Todoist project. Returns a comprehensive list of project-level comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the project.",
     getProjectCommentsParamsSchema.shape,
     async ({ projectId }) => {
-      const comments = await client.getProjectComments(projectId);
+      const comments = await client.getProjectComments({ projectId });
 
       return {
         content: [
@@ -149,7 +148,7 @@ export function registerCommentTools(server: McpServer, client: TodoistClient) {
     "Permanently delete a comment by its unique identifier. This action will remove the comment from its associated task or project. This operation cannot be undone, so use with caution. Returns confirmation of successful deletion or failure notification.",
     deleteCommentParamsSchema.shape,
     async ({ id }) => {
-      const success = await client.deleteComment(id);
+      const success = await client.deleteComment({ id });
 
       return {
         content: [

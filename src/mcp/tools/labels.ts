@@ -42,8 +42,7 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
     "Modify the properties of an existing personal label. Allows you to change the label's name, color, display order, and favorite status. All parameters except the label ID are optional, so you can update only the specific properties you want to change. Returns the updated label object with all current metadata.",
     updateLabelParamsSchema.shape,
     async (params) => {
-      const { id, ...updateData } = params;
-      const label = await client.updateLabel(id, updateData);
+      const label = await client.updateLabel(params);
 
       return {
         content: [
@@ -66,7 +65,7 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
     "Retrieve a specific personal label by its unique ID with complete metadata including name, color, order, and favorite status. Returns detailed information about the requested label for use in task organization and filtering. Requires a valid label ID that belongs to the authenticated user.",
     getLabelParamsSchema.shape,
     async ({ id }) => {
-      const label = await client.getLabel(id);
+      const label = await client.getLabel({ id });
 
       return {
         content: [
@@ -111,7 +110,7 @@ export function registerLabelTools(server: McpServer, client: TodoistClient) {
     "PERMANENTLY delete a personal label by its ID. WARNING: This action is IRREVERSIBLE and will automatically remove the label from all associated tasks. Use with caution as deleted labels cannot be recovered. Validates the label ID and provides clear success/failure messaging.",
     deleteLabelParamsSchema.shape,
     async ({ id }) => {
-      const success = await client.deleteLabel(id);
+      const success = await client.deleteLabel({ id });
 
       return {
         content: [

@@ -275,7 +275,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.getProject.mockResolvedValueOnce(mockProject);
 
-      const project = await client.getProject("123");
+      const project = await client.getProject({ id: "123" });
 
       expect(project).toEqual(mockProject);
       expect(mockTodoistApi.getProject).toHaveBeenCalledWith("123");
@@ -338,6 +338,7 @@ describe("TodoistClient", () => {
   describe("updateProject", () => {
     test("should update a project", async () => {
       const params: UpdateProjectParams = {
+        id: "update123",
         name: "Updated Project",
         color: "green",
         isFavorite: false,
@@ -355,14 +356,16 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.updateProject.mockResolvedValueOnce(mockUpdatedProject);
 
-      const project = await client.updateProject("update123", params);
+      const project = await client.updateProject(params);
 
       // Verify: Update parameters and project ID passed correctly
       expect(project).toEqual(mockUpdatedProject);
-      expect(mockTodoistApi.updateProject).toHaveBeenCalledWith(
-        "update123",
-        params,
-      );
+      expect(mockTodoistApi.updateProject).toHaveBeenCalledWith("update123", {
+        name: "Updated Project",
+        color: "green",
+        isFavorite: false,
+        viewStyle: "calendar",
+      });
     });
   });
 
@@ -370,7 +373,7 @@ describe("TodoistClient", () => {
     test("should delete a project", async () => {
       mockTodoistApi.deleteProject.mockResolvedValueOnce(true);
 
-      const result = await client.deleteProject("delete123");
+      const result = await client.deleteProject({ id: "delete123" });
 
       // Verify: Returns boolean success result
       expect(result).toBe(true);
@@ -468,7 +471,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.getTask.mockResolvedValueOnce(mockTask);
 
-      const task = await client.getTask("123");
+      const task = await client.getTask({ id: "123" });
 
       expect(task).toEqual(mockTask);
       expect(mockTodoistApi.getTask).toHaveBeenCalledWith("123");
@@ -535,6 +538,7 @@ describe("TodoistClient", () => {
   describe("updateTask", () => {
     test("should update a task", async () => {
       const params: UpdateTaskParams = {
+        id: "update123",
         content: "Updated Task",
         description: "Updated description",
         priority: 2,
@@ -560,13 +564,16 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.updateTask.mockResolvedValueOnce(mockUpdatedTask);
 
-      const task = await client.updateTask("update123", params);
+      const task = await client.updateTask(params);
 
       expect(task).toEqual(mockUpdatedTask);
-      expect(mockTodoistApi.updateTask).toHaveBeenCalledWith(
-        "update123",
-        params,
-      );
+      expect(mockTodoistApi.updateTask).toHaveBeenCalledWith("update123", {
+        content: "Updated Task",
+        description: "Updated description",
+        priority: 2,
+        labels: ["updated"],
+        dueDate: "2023-01-03",
+      });
     });
   });
 
@@ -574,7 +581,7 @@ describe("TodoistClient", () => {
     test("should delete a task", async () => {
       mockTodoistApi.deleteTask.mockResolvedValueOnce(true);
 
-      const result = await client.deleteTask("delete123");
+      const result = await client.deleteTask({ id: "delete123" });
 
       expect(result).toBe(true);
       expect(mockTodoistApi.deleteTask).toHaveBeenCalledWith("delete123");
@@ -585,7 +592,7 @@ describe("TodoistClient", () => {
     test("should close/complete a task", async () => {
       mockTodoistApi.closeTask.mockResolvedValueOnce(true);
 
-      const result = await client.closeTask("close123");
+      const result = await client.closeTask({ id: "close123" });
 
       expect(result).toBe(true);
       expect(mockTodoistApi.closeTask).toHaveBeenCalledWith("close123");
@@ -596,7 +603,7 @@ describe("TodoistClient", () => {
     test("should reopen a completed task", async () => {
       mockTodoistApi.reopenTask.mockResolvedValueOnce(true);
 
-      const result = await client.reopenTask("reopen123");
+      const result = await client.reopenTask({ id: "reopen123" });
 
       expect(result).toBe(true);
       expect(mockTodoistApi.reopenTask).toHaveBeenCalledWith("reopen123");
@@ -668,7 +675,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.getSection.mockResolvedValueOnce(mockSection);
 
-      const section = await client.getSection("123");
+      const section = await client.getSection({ id: "123" });
 
       expect(section).toEqual(mockSection);
       expect(mockTodoistApi.getSection).toHaveBeenCalledWith("123");
@@ -730,6 +737,7 @@ describe("TodoistClient", () => {
   describe("updateSection", () => {
     test("should update a section", async () => {
       const params: UpdateSectionParams = {
+        id: "update123",
         name: "Updated Section",
       };
 
@@ -741,7 +749,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.updateSection.mockResolvedValueOnce(mockUpdatedSection);
 
-      const section = await client.updateSection("update123", params);
+      const section = await client.updateSection(params);
 
       expect(section).toEqual(mockUpdatedSection);
       expect(mockTodoistApi.updateSection).toHaveBeenCalledWith("update123", {
@@ -754,7 +762,7 @@ describe("TodoistClient", () => {
     test("should delete a section", async () => {
       mockTodoistApi.deleteSection.mockResolvedValueOnce(true);
 
-      const result = await client.deleteSection("delete123");
+      const result = await client.deleteSection({ id: "delete123" });
 
       expect(result).toBe(true);
       expect(mockTodoistApi.deleteSection).toHaveBeenCalledWith("delete123");
@@ -902,7 +910,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.getLabel.mockResolvedValueOnce(mockLabel);
 
-      const label = await client.getLabel("label123");
+      const label = await client.getLabel({ id: "label123" });
 
       expect(label).toEqual(mockLabel);
       expect(mockTodoistApi.getLabel).toHaveBeenCalledWith("label123");
@@ -1045,7 +1053,7 @@ describe("TodoistClient", () => {
     test("should delete a comment", async () => {
       mockTodoistApi.deleteComment.mockResolvedValueOnce(true);
 
-      const result = await client.deleteComment("comment123");
+      const result = await client.deleteComment({ id: "comment123" });
 
       expect(result).toBe(true);
       expect(mockTodoistApi.deleteComment).toHaveBeenCalledWith("comment123");
@@ -1214,7 +1222,7 @@ describe("TodoistClient", () => {
           nextCursor: null,
         });
 
-      const comments = await client.getTaskComments("task123");
+      const comments = await client.getTaskComments({ taskId: "task123" });
 
       // Verify: All comments collected from multiple pages
       expect(comments).toEqual([mockComment1, mockComment2]);
@@ -1253,7 +1261,7 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const comments = await client.getTaskComments("task456");
+      const comments = await client.getTaskComments({ taskId: "task456" });
 
       // Verify: Only one API call made
       expect(comments).toEqual([mockComment]);
@@ -1271,7 +1279,7 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const comments = await client.getTaskComments("task789");
+      const comments = await client.getTaskComments({ taskId: "task789" });
 
       // Verify: Empty array returned
       expect(comments).toEqual([]);
@@ -1312,7 +1320,9 @@ describe("TodoistClient", () => {
           nextCursor: null,
         });
 
-      const comments = await client.getProjectComments("project123");
+      const comments = await client.getProjectComments({
+        projectId: "project123",
+      });
 
       // Verify: All comments collected from multiple pages
       expect(comments).toEqual([mockComment1, mockComment2]);
@@ -1352,7 +1362,9 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const comments = await client.getProjectComments("project456");
+      const comments = await client.getProjectComments({
+        projectId: "project456",
+      });
 
       // Verify: Only one API call made
       expect(comments).toEqual([mockComment]);
@@ -1370,7 +1382,9 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const comments = await client.getProjectComments("project789");
+      const comments = await client.getProjectComments({
+        projectId: "project789",
+      });
 
       // Verify: Empty array returned
       expect(comments).toEqual([]);
@@ -1385,6 +1399,7 @@ describe("TodoistClient", () => {
   describe("updateComment", () => {
     test("should update a comment", async () => {
       const params: UpdateCommentParams = {
+        id: "comment123",
         content: "Updated comment content",
       };
 
@@ -1397,7 +1412,7 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.updateComment.mockResolvedValueOnce(mockUpdatedComment);
 
-      const comment = await client.updateComment("comment123", params);
+      const comment = await client.updateComment(params);
 
       expect(comment).toEqual(mockUpdatedComment);
       expect(mockTodoistApi.updateComment).toHaveBeenCalledWith("comment123", {
@@ -1421,7 +1436,8 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask1, movedTask2]);
 
-      const result = await client.moveTasksToProject(["task1", "task2"], {
+      const result = await client.moveTasksToProject({
+        ids: ["task1", "task2"],
         projectId: "project2",
       });
 
@@ -1443,7 +1459,8 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask]);
 
-      const result = await client.moveTasksToSection(["task1"], {
+      const result = await client.moveTasksToSection({
+        ids: ["task1"],
         sectionId: "section2",
       });
 
@@ -1464,7 +1481,8 @@ describe("TodoistClient", () => {
 
       mockTodoistApi.moveTasks.mockResolvedValueOnce([movedTask]);
 
-      const result = await client.moveTasksToParent(["task1"], {
+      const result = await client.moveTasksToParent({
+        ids: ["task1"],
         parentId: "parent123",
       });
 

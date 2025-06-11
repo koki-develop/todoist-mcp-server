@@ -50,26 +50,6 @@ export const createProjectParamsSchema = z.object({
     .describe("View style for the project (optional)"),
 });
 
-// Client update schemas (without ID)
-export const updateProjectClientSchema = z.object({
-  name: z
-    .string()
-    .min(1)
-    .optional()
-    .describe("New name for the project (optional)"),
-  color: colorSchema
-    .optional()
-    .describe("New color for the project (optional)"),
-  isFavorite: z
-    .boolean()
-    .optional()
-    .describe("Mark project as favorite or not (optional)"),
-  viewStyle: z
-    .enum(["list", "board", "calendar"])
-    .optional()
-    .describe("New view style for the project (optional)"),
-});
-
 export const updateProjectParamsSchema = z.object({
   id: z.string().min(1).describe("ID of the project to update"),
   name: z
@@ -119,11 +99,6 @@ export const createSectionParamsSchema = z.object({
 
 export const updateSectionParamsSchema = z.object({
   id: z.string().min(1).describe("ID of the section to update"),
-  name: z.string().min(1).describe("New name for the section"),
-});
-
-// Client update schemas (without ID)
-export const updateSectionClientSchema = z.object({
   name: z.string().min(1).describe("New name for the section"),
 });
 
@@ -211,36 +186,6 @@ export const updateTaskParamsSchema = z.object({
     .describe("New duration unit (optional)"),
 });
 
-// Client update schemas (without ID)
-export const updateTaskClientSchema = z.object({
-  content: z.string().min(1).optional().describe("New task content (optional)"),
-  description: z
-    .string()
-    .optional()
-    .describe("New task description (optional)"),
-  labels: z.array(z.string()).optional().describe("New label IDs (optional)"),
-  priority: z.number().optional().describe("New task priority 1-4 (optional)"),
-  dueString: z
-    .string()
-    .optional()
-    .describe("New due date in natural language (optional)"),
-  dueDate: z.string().optional().describe("New due date YYYY-MM-DD (optional)"),
-  dueDatetime: z
-    .string()
-    .optional()
-    .describe("New due datetime RFC3339 (optional)"),
-  dueLang: z
-    .string()
-    .optional()
-    .describe("Language for due date parsing (optional)"),
-  assigneeId: z.string().optional().describe("New assignee user ID (optional)"),
-  duration: z.number().optional().describe("New duration amount (optional)"),
-  durationUnit: z
-    .enum(["minute", "day"])
-    .optional()
-    .describe("New duration unit (optional)"),
-});
-
 export const deleteTaskParamsSchema = z.object({
   id: z.string().min(1).describe("ID of the task to delete"),
 });
@@ -274,22 +219,6 @@ export const createLabelParamsSchema = z.object({
 
 export const updateLabelParamsSchema = z.object({
   id: z.string().min(1).describe("ID of the label to update"),
-  name: z
-    .string()
-    .min(1)
-    .optional()
-    .describe("New name for the label (optional)"),
-  color: colorSchema.optional().describe("New color for the label (optional)"),
-  order: z
-    .number()
-    .nullable()
-    .optional()
-    .describe("New display order position (optional)"),
-  isFavorite: z.boolean().optional().describe("New favorite status (optional)"),
-});
-
-// Client update schemas (without ID)
-export const updateLabelClientSchema = z.object({
   name: z
     .string()
     .min(1)
@@ -351,11 +280,6 @@ export const updateCommentParamsSchema = z.object({
   content: z.string().min(1).describe("New comment content"),
 });
 
-// Client update schemas (without ID)
-export const updateCommentClientSchema = z.object({
-  content: z.string().min(1).describe("New comment content"),
-});
-
 export const getTaskCommentsParamsSchema = z.object({
   taskId: z.string().min(1).describe("ID of the task to get comments from"),
 });
@@ -396,19 +320,6 @@ export const moveTasksToParentParamsSchema = z.object({
   parentId: z.string().min(1).describe("Target parent task ID"),
 });
 
-// Client move task schemas (without IDs since they're passed separately)
-export const moveTasksToProjectClientSchema = z.object({
-  projectId: z.string().min(1).describe("Target project ID"),
-});
-
-export const moveTasksToSectionClientSchema = z.object({
-  sectionId: z.string().min(1).describe("Target section ID"),
-});
-
-export const moveTasksToParentClientSchema = z.object({
-  parentId: z.string().min(1).describe("Target parent task ID"),
-});
-
 // Inferred types from schemas
 export type Color = z.infer<typeof colorSchema>;
 export type CreateProjectParams = z.infer<typeof createProjectParamsSchema>;
@@ -442,6 +353,12 @@ export type GetProjectCommentsParams = z.infer<
 >;
 export type DeleteCommentParams = z.infer<typeof deleteCommentParamsSchema>;
 export type QuickAddTaskParams = z.infer<typeof quickAddTaskParamsSchema>;
+// All parameter types inferred from schemas
+export type UpdateProjectParams = z.infer<typeof updateProjectParamsSchema>;
+export type UpdateSectionParams = z.infer<typeof updateSectionParamsSchema>;
+export type UpdateTaskParams = z.infer<typeof updateTaskParamsSchema>;
+export type UpdateLabelParams = z.infer<typeof updateLabelParamsSchema>;
+export type UpdateCommentParams = z.infer<typeof updateCommentParamsSchema>;
 export type MoveTasksToProjectParams = z.infer<
   typeof moveTasksToProjectParamsSchema
 >;
@@ -450,20 +367,4 @@ export type MoveTasksToSectionParams = z.infer<
 >;
 export type MoveTasksToParentParams = z.infer<
   typeof moveTasksToParentParamsSchema
->;
-
-// Client interface types (without IDs for update operations)
-export type UpdateProjectParams = z.infer<typeof updateProjectClientSchema>;
-export type UpdateSectionParams = z.infer<typeof updateSectionClientSchema>;
-export type UpdateTaskParams = z.infer<typeof updateTaskClientSchema>;
-export type UpdateLabelParams = z.infer<typeof updateLabelClientSchema>;
-export type UpdateCommentParams = z.infer<typeof updateCommentClientSchema>;
-export type MoveTasksToProjectClientParams = z.infer<
-  typeof moveTasksToProjectClientSchema
->;
-export type MoveTasksToSectionClientParams = z.infer<
-  typeof moveTasksToSectionClientSchema
->;
-export type MoveTasksToParentClientParams = z.infer<
-  typeof moveTasksToParentClientSchema
 >;
