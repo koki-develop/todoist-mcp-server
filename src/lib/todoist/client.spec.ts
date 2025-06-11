@@ -1225,4 +1225,103 @@ describe("TodoistClient", () => {
       });
     });
   });
+
+  describe("getProjectComments", () => {
+    test("should handle multiple pages of project comments", async () => {
+      // Setup: Create mock comments for multi-page response
+      const mockComment1 = createMockComment({
+        id: "1",
+        content: "First project comment",
+        projectId: "project123",
+        taskId: undefined,
+      });
+      const mockComment2 = createMockComment({
+        id: "2",
+        content: "Second project comment",
+        projectId: "project123",
+        taskId: undefined,
+        postedAt: "2023-01-02T00:00:00Z",
+        postedUid: "user456",
+      });
+
+      // Mock paginated API responses
+      mockTodoistApi.getComments
+        .mockResolvedValueOnce({
+          results: [mockComment1],
+          nextCursor: "cursor1",
+        })
+        .mockResolvedValueOnce({
+          results: [mockComment2],
+          nextCursor: null,
+        });
+
+      const comments = await client.getProjectComments("project123");
+
+      // Verify: All comments collected from multiple pages
+      expect(comments).toEqual([mockComment1, mockComment2]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getComments).toHaveBeenNthCalledWith(1, {
+        projectId: "project123",
+        cursor: null,
+      });
+      expect(mockTodoistApi.getComments).toHaveBeenNthCalledWith(2, {
+        projectId: "project123",
+        cursor: "cursor1",
+      });
+    });
+
+    test("should handle single page project response", async () => {
+      const mockComment = createMockComment({
+        id: "comment123",
+        content: "Single project comment",
+        projectId: "project456",
+        taskId: undefined,
+        fileAttachment: {
+          resourceType: "file",
+          fileName: "project-document.pdf",
+          fileSize: 2048,
+          fileType: "application/pdf",
+          fileUrl: "https://example.com/project-file.pdf",
+        },
+        reactions: {
+          "👍": ["user123", "user456"],
+          "📋": ["user789"],
+        },
+      });
+
+      // Mock single-page response (no nextCursor)
+      mockTodoistApi.getComments.mockResolvedValueOnce({
+        results: [mockComment],
+        nextCursor: null,
+      });
+
+      const comments = await client.getProjectComments("project456");
+
+      // Verify: Only one API call made
+      expect(comments).toEqual([mockComment]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(1);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledWith({
+        projectId: "project456",
+        cursor: null,
+      });
+    });
+
+    test("should handle empty project comments response", async () => {
+      // Mock empty response
+      mockTodoistApi.getComments.mockResolvedValueOnce({
+        results: [],
+        nextCursor: null,
+      });
+
+      const comments = await client.getProjectComments("project789");
+
+      // Verify: Empty array returned
+      expect(comments).toEqual([]);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledTimes(1);
+      expect(mockTodoistApi.getComments).toHaveBeenCalledWith({
+        projectId: "project789",
+        cursor: null,
+      });
+    });
+  });
 });

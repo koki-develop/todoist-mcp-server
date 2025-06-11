@@ -85,6 +85,7 @@ The server provides the following tools that AI assistants can use to interact w
 - [Comments](#comments)
   - [`create_comment`](#create_comment)
   - [`get_task_comments`](#get_task_comments)
+  - [`get_project_comments`](#get_project_comments)
 
 ### Projects
 
@@ -338,6 +339,13 @@ Retrieves all comments associated with a specific Todoist task. Returns a compre
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | **`taskId`** | **Yes** | ID of the task to retrieve comments from |
+
+#### `get_project_comments`
+Retrieves all comments associated with a specific Todoist project. Returns a comprehensive list of project-level comments with their metadata including content, author information, timestamps, file attachments, and reactions. Comments are returned in chronological order. Automatically handles pagination to retrieve all comments for the project.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`projectId`** | **Yes** | ID of the project to retrieve comments from |
 
 ## License
 
