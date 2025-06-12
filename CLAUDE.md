@@ -101,7 +101,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Tools**: Complete tools-only implementation with both read and write operations (29 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
-  - **Task Tools**: `get_tasks` (with filtering), `get_tasks_by_filter` (advanced filter syntax), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
+  - **Task Tools**: `get_tasks` (with filtering), `get_tasks_by_filter` (advanced filter syntax), `get_task`, `create_task` (with deadline support), `update_task` (with deadline support), `delete_task`, `close_task`, `reopen_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
   - **Label Tools**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
   - **Comment Tools**: `create_task_comment`, `create_project_comment`, `get_task_comments`, `get_project_comments`, `update_comment`, `delete_comment`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
@@ -172,6 +172,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 **API Parameter Mapping**: When interfacing with Todoist API:
 - Handle parameter transformations in TodoistClient (e.g., `childOrder` → `order`)
 - Manage exclusive parameters properly (e.g., `dueDate` vs `dueDatetime` - prefer datetime)
+- Deadline support: `deadlineDate` (YYYY-MM-DD format) and `deadlineLang` (18 supported languages: en, da, pl, zh, ko, de, pt, ja, it, fr, sv, ru, es, nl, fi, nb, tw)
 - Always handle pagination with cursor-based iteration for list methods
 
 **Docker Support**: Multi-stage Dockerfile for efficient containerization:
