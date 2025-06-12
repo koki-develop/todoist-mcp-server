@@ -84,12 +84,19 @@ export class TodoistClient {
     return this._api.deleteProject(params.id);
   }
 
-  async getTasks(params?: GetTasksParams): Promise<Task[]> {
+  async getTasks(params: GetTasksParams): Promise<Task[]> {
     const tasks: Task[] = [];
     let cursor: string | null = null;
 
     do {
-      const response = await this._api.getTasks({ ...params, cursor });
+      const response = await this._api.getTasks({
+        projectId: params.projectId,
+        sectionId: params.sectionId,
+        parentId: params.parentId,
+        label: params.label,
+        ids: params.ids,
+        cursor,
+      });
       tasks.push(...response.results);
       cursor = response.nextCursor;
     } while (cursor);
