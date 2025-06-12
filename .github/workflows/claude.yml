@@ -38,4 +38,3 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           allowed_tools: "Bash(bun install:*),Bash(bun run lint:*),Bash(bun run format:*),Bash(bun run typecheck:*),Bash(bun run build:*),Bash(bun test:*),Bash(zizmor:*),Bash(actionlint:*),Bash(ghalint run:*),Bash(git rebase:*),Bash(pinact:*)"
-
