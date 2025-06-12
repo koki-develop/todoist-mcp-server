@@ -479,6 +479,129 @@ describe("TodoistClient", () => {
     });
   });
 
+  describe("getTasksByFilter", () => {
+    test("should return filtered tasks using filter query", async () => {
+      const mockTask1 = createMockTask({
+        id: "1",
+        content: "Urgent Work Task",
+        projectId: "project123",
+        priority: 4,
+      });
+      const mockTask2 = createMockTask({
+        id: "2",
+        content: "Another Urgent Task",
+        projectId: "project456",
+        priority: 4,
+      });
+
+      const params = {
+        query: "p1 & @work",
+        lang: "en",
+      };
+
+      mockTodoistApi.getTasksByFilter.mockResolvedValueOnce({
+        results: [mockTask1, mockTask2],
+        nextCursor: null,
+      });
+
+      const tasks = await client.getTasksByFilter(params);
+
+      expect(tasks).toEqual([mockTask1, mockTask2]);
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenCalledWith({
+        query: params.query,
+        lang: params.lang,
+        cursor: null,
+      });
+    });
+
+    test("should handle pagination for filter queries", async () => {
+      const mockTask1 = createMockTask({ id: "1", content: "Task 1" });
+      const mockTask2 = createMockTask({ id: "2", content: "Task 2" });
+      const mockTask3 = createMockTask({ id: "3", content: "Task 3" });
+
+      const params = {
+        query: "today",
+      };
+
+      // Reset mock before this test
+      mockTodoistApi.getTasksByFilter.mockReset();
+
+      // Mock first page response
+      mockTodoistApi.getTasksByFilter.mockResolvedValueOnce({
+        results: [mockTask1, mockTask2],
+        nextCursor: "cursor123",
+      });
+
+      // Mock second page response
+      mockTodoistApi.getTasksByFilter.mockResolvedValueOnce({
+        results: [mockTask3],
+        nextCursor: null,
+      });
+
+      const tasks = await client.getTasksByFilter(params);
+
+      expect(tasks).toEqual([mockTask1, mockTask2, mockTask3]);
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenCalledTimes(2);
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenNthCalledWith(1, {
+        query: params.query,
+        lang: undefined,
+        cursor: null,
+      });
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenNthCalledWith(2, {
+        query: params.query,
+        lang: undefined,
+        cursor: "cursor123",
+      });
+    });
+
+    test("should handle complex filter queries", async () => {
+      const mockTask = createMockTask({
+        id: "1",
+        content: "Complex Filter Task",
+        projectId: "project123",
+      });
+
+      const params = {
+        query: "(p1 | p2) & #Work & !subtask & assigned to: me",
+        lang: "ja",
+      };
+
+      mockTodoistApi.getTasksByFilter.mockResolvedValueOnce({
+        results: [mockTask],
+        nextCursor: null,
+      });
+
+      const tasks = await client.getTasksByFilter(params);
+
+      expect(tasks).toEqual([mockTask]);
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenCalledWith({
+        query: params.query,
+        lang: params.lang,
+        cursor: null,
+      });
+    });
+
+    test("should handle empty filter results", async () => {
+      const params = {
+        query: "nonexistent_label",
+      };
+
+      mockTodoistApi.getTasksByFilter.mockResolvedValueOnce({
+        results: [],
+        nextCursor: null,
+      });
+
+      const tasks = await client.getTasksByFilter(params);
+
+      expect(tasks).toEqual([]);
+      expect(mockTodoistApi.getTasksByFilter).toHaveBeenCalledWith({
+        query: params.query,
+        lang: undefined,
+        cursor: null,
+      });
+    });
+  });
+
   describe("getTask", () => {
     test("should return a specific task", async () => {
       const mockTask = createMockTask({
