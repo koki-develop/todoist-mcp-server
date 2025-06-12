@@ -133,11 +133,6 @@ export class TodoistClient {
     if (apiParams.dueDate && apiParams.dueDatetime) {
       apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
     }
-    // Map childOrder to order for API
-    if (apiParams.childOrder !== undefined) {
-      apiParams.order = apiParams.childOrder;
-      apiParams.childOrder = undefined;
-    }
     return this._api.addTask(apiParams);
   }
 

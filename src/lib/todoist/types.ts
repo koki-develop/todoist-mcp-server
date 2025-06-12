@@ -146,10 +146,7 @@ export const createTaskParamsSchema = z.object({
   projectId: z.string().optional().describe("Project ID (optional)"),
   sectionId: z.string().optional().describe("Section ID (optional)"),
   parentId: z.string().optional().describe("Parent task ID (optional)"),
-  childOrder: z
-    .number()
-    .optional()
-    .describe("Order among child tasks (optional)"),
+  order: z.number().optional().describe("Display order position (optional)"),
   labels: z.array(z.string()).optional().describe("Label IDs (optional)"),
   priority: z.number().optional().describe("Task priority 1-4 (optional)"),
   dueString: z
