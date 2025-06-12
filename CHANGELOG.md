@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.4.1...v0.5.0) (2025-06-12)
+
+
+### Features
+
+* add get_tasks_by_filter tool for advanced task filtering ([#56](https://github.com/koki-develop/todoist-mcp-server/issues/56)) ([1cda1ad](https://github.com/koki-develop/todoist-mcp-server/commit/1cda1ad99b8c0c229d9f0fce0606ff991f05f0ad))
+* enhance create_task tool with deadlineDate/deadlineLang parameters ([#58](https://github.com/koki-develop/todoist-mcp-server/issues/58)) ([94d1824](https://github.com/koki-develop/todoist-mcp-server/commit/94d18245ff737acde8028e37a9a274e6ceb0a0db))
+
+
+### Bug Fixes
+
+* correct getTasks parameters to match Todoist SDK ([#57](https://github.com/koki-develop/todoist-mcp-server/issues/57)) ([03b7bb7](https://github.com/koki-develop/todoist-mcp-server/commit/03b7bb7c6e64d44d35dbc627c6c599038dc92b2a))
+* remove unnecessary console.error from server startup ([91cf187](https://github.com/koki-develop/todoist-mcp-server/commit/91cf1877d68dff31c435ab538215cc56e78d9604))
+
 ## [0.4.1](https://github.com/koki-develop/todoist-mcp-server/compare/v0.4.0...v0.4.1) (2025-06-12)
 
 
