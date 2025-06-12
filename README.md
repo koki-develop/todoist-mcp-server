@@ -183,9 +183,8 @@ Retrieves Todoist tasks with flexible filtering options. Returns a comprehensive
 |-----------|----------|-------------|
 | `projectId` | No | Filter tasks by project ID |
 | `sectionId` | No | Filter tasks by section ID |
-| `labelId` | No | Filter tasks by label ID |
-| `filter` | No | Custom filter query in Todoist filter syntax |
-| `lang` | No | Language for filter parsing |
+| `parentId` | No | Filter tasks by parent task ID |
+| `label` | No | Filter tasks by label name |
 | `ids` | No | Array of specific task IDs to retrieve |
 
 #### `get_tasks_by_filter`
