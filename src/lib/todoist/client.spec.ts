@@ -630,6 +630,8 @@ describe("TodoistClient", () => {
         priority: 4,
         labels: ["urgent", "work"],
         dueString: "tomorrow",
+        deadlineDate: "2023-12-31",
+        deadlineLang: "en",
         duration: 30,
         durationUnit: "minute",
       };
@@ -659,7 +661,23 @@ describe("TodoistClient", () => {
       const task = await client.createTask(params);
 
       expect(task).toEqual(mockCreatedTask);
-      expect(mockTodoistApi.addTask).toHaveBeenCalledWith(params);
+      expect(mockTodoistApi.addTask).toHaveBeenCalledWith({
+        content: "New Task",
+        description: "Task description",
+        projectId: "project123",
+        sectionId: undefined,
+        parentId: undefined,
+        order: undefined,
+        labels: ["urgent", "work"],
+        priority: 4,
+        assigneeId: undefined,
+        dueString: "tomorrow",
+        dueLang: undefined,
+        deadlineLang: "en",
+        deadlineDate: "2023-12-31",
+        duration: 30,
+        durationUnit: "minute",
+      });
     });
 
     test("should create a task with minimal parameters", async () => {
@@ -674,7 +692,21 @@ describe("TodoistClient", () => {
       const task = await client.createTask(params);
 
       expect(task).toEqual(mockCreatedTask);
-      expect(mockTodoistApi.addTask).toHaveBeenCalledWith(params);
+      expect(mockTodoistApi.addTask).toHaveBeenCalledWith({
+        content: "Simple Task",
+        description: undefined,
+        projectId: undefined,
+        sectionId: undefined,
+        parentId: undefined,
+        order: undefined,
+        labels: undefined,
+        priority: undefined,
+        assigneeId: undefined,
+        dueString: undefined,
+        dueLang: undefined,
+        deadlineLang: undefined,
+        deadlineDate: undefined,
+      });
     });
   });
 
@@ -687,6 +719,8 @@ describe("TodoistClient", () => {
         priority: 2,
         labels: ["updated"],
         dueDate: "2023-01-03",
+        deadlineDate: "2023-12-25",
+        deadlineLang: "ja",
       };
 
       const mockUpdatedTask = createMockTask({
@@ -713,9 +747,48 @@ describe("TodoistClient", () => {
       expect(mockTodoistApi.updateTask).toHaveBeenCalledWith("update123", {
         content: "Updated Task",
         description: "Updated description",
-        priority: 2,
         labels: ["updated"],
+        priority: 2,
+        dueString: undefined,
+        dueLang: undefined,
+        deadlineDate: "2023-12-25",
+        deadlineLang: "ja",
+        assigneeId: undefined,
         dueDate: "2023-01-03",
+      });
+    });
+
+    test("should create a task with deadline parameters only", async () => {
+      const params: CreateTaskParams = {
+        content: "Task with Deadline",
+        deadlineDate: "2024-01-15",
+        deadlineLang: "ja",
+      };
+
+      const mockCreatedTask = createMockTask({
+        id: "deadline123",
+        content: "Task with Deadline",
+      });
+
+      mockTodoistApi.addTask.mockResolvedValueOnce(mockCreatedTask);
+
+      const task = await client.createTask(params);
+
+      expect(task).toEqual(mockCreatedTask);
+      expect(mockTodoistApi.addTask).toHaveBeenCalledWith({
+        content: "Task with Deadline",
+        description: undefined,
+        projectId: undefined,
+        sectionId: undefined,
+        parentId: undefined,
+        order: undefined,
+        labels: undefined,
+        priority: undefined,
+        assigneeId: undefined,
+        dueString: undefined,
+        dueLang: undefined,
+        deadlineLang: "ja",
+        deadlineDate: "2024-01-15",
       });
     });
   });

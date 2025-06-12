@@ -126,30 +126,63 @@ export class TodoistClient {
   }
 
   async createTask(params: CreateTaskParams): Promise<Task> {
-    // Convert our params to match API requirements
-    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
-    const apiParams = { ...params } as any;
-    // API requires either dueDate OR dueDatetime, not both
-    if (apiParams.dueDate && apiParams.dueDatetime) {
-      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
-    }
-    // Map childOrder to order for API
-    if (apiParams.childOrder !== undefined) {
-      apiParams.order = apiParams.childOrder;
-      apiParams.childOrder = undefined;
-    }
-    return this._api.addTask(apiParams);
+    return this._api.addTask({
+      content: params.content,
+      description: params.description,
+      projectId: params.projectId,
+      sectionId: params.sectionId,
+      parentId: params.parentId,
+      order: params.order,
+      labels: params.labels,
+      priority: params.priority,
+      assigneeId: params.assigneeId,
+      dueString: params.dueString,
+      dueLang: params.dueLang,
+      deadlineLang: params.deadlineLang,
+      deadlineDate: params.deadlineDate,
+      ...(() => {
+        if (params.dueDatetime) return { dueDatetime: params.dueDatetime };
+        if (params.dueDate) return { dueDate: params.dueDate };
+        return {};
+      })(),
+      ...(() => {
+        if (params.duration && params.durationUnit) {
+          return {
+            duration: params.duration,
+            durationUnit: params.durationUnit,
+          };
+        }
+        return {};
+      })(),
+    });
   }
 
   async updateTask(params: UpdateTaskParams): Promise<Task> {
-    // Convert our params to match API requirements
-    // biome-ignore lint/suspicious/noExplicitAny: Required for API parameter conversion
-    const { id, ...apiParams } = params as any;
-    // API requires either dueDate OR dueDatetime, not both
-    if (apiParams.dueDate && apiParams.dueDatetime) {
-      apiParams.dueDate = undefined; // Prefer dueDatetime if both are provided
-    }
-    return this._api.updateTask(id, apiParams);
+    return this._api.updateTask(params.id, {
+      content: params.content,
+      description: params.description,
+      labels: params.labels,
+      priority: params.priority,
+      dueString: params.dueString,
+      dueLang: params.dueLang,
+      deadlineDate: params.deadlineDate,
+      deadlineLang: params.deadlineLang,
+      assigneeId: params.assigneeId,
+      ...(() => {
+        if (params.dueDatetime) return { dueDatetime: params.dueDatetime };
+        if (params.dueDate) return { dueDate: params.dueDate };
+        return {};
+      })(),
+      ...(() => {
+        if (params.duration && params.durationUnit) {
+          return {
+            duration: params.duration,
+            durationUnit: params.durationUnit,
+          };
+        }
+        return {};
+      })(),
+    });
   }
 
   async deleteTask(params: DeleteTaskParams): Promise<boolean> {

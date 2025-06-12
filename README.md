@@ -212,13 +212,15 @@ Creates a new Todoist task with comprehensive configuration options.
 | `projectId` | No | ID of the project to add the task to |
 | `sectionId` | No | ID of the section within the project |
 | `parentId` | No | ID of parent task for creating subtasks |
-| `childOrder` | No | Position in project/parent task |
+| `order` | No | Display order position |
 | `labels` | No | Array of label names to assign |
 | `priority` | No | Priority level (1=normal, 2=high, 3=very high, 4=urgent) |
 | `dueString` | No | Natural language due date like 'tomorrow', 'next Monday at 2pm' |
 | `dueDate` | No | Due date in YYYY-MM-DD format |
 | `dueDatetime` | No | Due datetime in RFC 3339 format |
 | `dueLang` | No | Language for natural language due date parsing |
+| `deadlineDate` | No | Deadline date in YYYY-MM-DD format |
+| `deadlineLang` | No | Language for deadline parsing (en, da, pl, zh, ko, de, pt, ja, it, fr, sv, ru, es, nl, fi, nb, tw) |
 | `assigneeId` | No | ID of user to assign task to |
 | `duration` | No | Task duration amount |
 | `durationUnit` | No | Duration unit (minute or day) |
@@ -238,6 +240,8 @@ Modifies the properties of an existing Todoist task.
 | `dueDate` | No | New due date in YYYY-MM-DD format |
 | `dueDatetime` | No | New due datetime in RFC 3339 format |
 | `dueLang` | No | Language for natural language due date parsing |
+| `deadlineDate` | No | New deadline date in YYYY-MM-DD format |
+| `deadlineLang` | No | New language for deadline parsing (en, da, pl, zh, ko, de, pt, ja, it, fr, sv, ru, es, nl, fi, nb, tw) |
 | `assigneeId` | No | New assignee user ID |
 | `duration` | No | New task duration amount |
 | `durationUnit` | No | New duration unit |
