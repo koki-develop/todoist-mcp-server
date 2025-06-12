@@ -123,6 +123,21 @@ export const getTasksParamsSchema = z.object({
     .describe("Specific task IDs to retrieve (optional)"),
 });
 
+export const getTasksByFilterParamsSchema = z.object({
+  query: z
+    .string()
+    .min(1)
+    .describe(
+      "Filter query string using Todoist's advanced filter syntax. Supports operators: `&` (AND), `|` (OR), `!` (NOT), `()` (grouping). Filter types include: dates (`today`, `overdue`, `no date`, `7 days`), projects (`#Work`, `##Work` for sub-projects), labels (`@urgent`, `@waiting`), priority (`p1`, `p2`, `p3`, `p4`), assignments (`assigned to: name`), and search (`search: keyword`). Examples: `overdue & @work`, `today | tomorrow`, `(p1 | p2) & 7 days`, `#Work & !subtask`, `assigned to: me & @urgent`",
+    ),
+  lang: z
+    .string()
+    .optional()
+    .describe(
+      "IETF language tag defining what language the filter is written in, if different from default English (e.g., 'ja' for Japanese, 'es' for Spanish). Optional parameter.",
+    ),
+});
+
 export const createTaskParamsSchema = z.object({
   content: z.string().min(1).describe("Task content"),
   description: z.string().optional().describe("Task description (optional)"),
@@ -323,6 +338,9 @@ export type CreateSectionParams = z.infer<typeof createSectionParamsSchema>;
 export type DeleteSectionParams = z.infer<typeof deleteSectionParamsSchema>;
 export type GetSectionParams = z.infer<typeof getSectionParamsSchema>;
 export type GetTasksParams = z.infer<typeof getTasksParamsSchema>;
+export type GetTasksByFilterParams = z.infer<
+  typeof getTasksByFilterParamsSchema
+>;
 export type CreateTaskParams = z.infer<typeof createTaskParamsSchema>;
 export type DeleteTaskParams = z.infer<typeof deleteTaskParamsSchema>;
 export type GetTaskParams = z.infer<typeof getTaskParamsSchema>;

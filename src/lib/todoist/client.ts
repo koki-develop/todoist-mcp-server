@@ -20,6 +20,7 @@ import type {
   GetSectionsParams,
   GetTaskCommentsParams,
   GetTaskParams,
+  GetTasksByFilterParams,
   GetTasksParams,
   Label,
   MoveTasksToParentParams,
@@ -89,6 +90,23 @@ export class TodoistClient {
 
     do {
       const response = await this._api.getTasks({ ...params, cursor });
+      tasks.push(...response.results);
+      cursor = response.nextCursor;
+    } while (cursor);
+
+    return tasks;
+  }
+
+  async getTasksByFilter(params: GetTasksByFilterParams): Promise<Task[]> {
+    const tasks: Task[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const response = await this._api.getTasksByFilter({
+        query: params.query,
+        lang: params.lang,
+        cursor,
+      });
       tasks.push(...response.results);
       cursor = response.nextCursor;
     } while (cursor);
