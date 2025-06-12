@@ -98,10 +98,10 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Tools**: Complete tools-only implementation with both read and write operations (28 total tools):
+- **Tools**: Complete tools-only implementation with both read and write operations (29 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
-  - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
+  - **Task Tools**: `get_tasks` (with filtering), `get_tasks_by_filter` (advanced filter syntax), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
   - **Label Tools**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
   - **Comment Tools**: `create_task_comment`, `create_project_comment`, `get_task_comments`, `get_project_comments`, `update_comment`, `delete_comment`
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
@@ -227,9 +227,9 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
 3. **Test Core Operations**: Systematically test tool categories:
    - **Projects**: `get_projects`, `create_project`, `delete_project`  
    - **Sections**: `create_section`, `get_sections`
-   - **Tasks**: `create_task`, `get_tasks`, `close_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
+   - **Tasks**: `create_task`, `get_tasks`, `get_tasks_by_filter`, `close_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
    - **Labels**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
    - **Comments**: `create_task_comment`, `create_project_comment`, `get_task_comments`, `get_project_comments`, `update_comment`, `delete_comment`
 4. **Verify Results**: Check Japanese text support, hierarchical data structure, comment management, and bulk task movement operations
 
-This provides comprehensive validation of all 28 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 29 MCP tools through automated browser interaction.
