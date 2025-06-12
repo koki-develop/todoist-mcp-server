@@ -61,7 +61,6 @@ src/              # Source code
 │       ├── tasks.ts      # Task tools (CRUD + close/reopen + read operations)
 │       ├── labels.ts     # Label tools (create + update + individual/list read + delete operations)
 │       ├── comments.ts   # Comment tools (separate task/project creation + read with pagination + update/delete)
-│       └── advanced.ts   # Advanced tools (natural language task creation)
 └── lib/
     └── todoist/  # Todoist API client wrapper
         ├── client.ts     # TodoistClient class with CRUD operations
@@ -94,21 +93,19 @@ Dockerfile        # Multi-stage Docker build with Bun
 - **API Wrapper**: Wraps `@doist/todoist-api-typescript` with complete project, section, task, label, and comment CRUD operations plus bulk task movement operations
 - **Pagination**: Automatic pagination handling in `getProjects()`, `getSections()`, `getTasks()`, `getLabels()`, `getTaskComments()`, and `getProjectComments()` methods using cursor-based iteration
 - **Individual Retrieval**: Direct methods for getting individual items: `getProject()`, `getSection()`, `getTask()`, `getLabel()`
-- **Advanced Features**: Natural language task creation via `quickAddTask()` with intelligent parsing of dates, projects, labels, and priorities
 - **Comment Management**: Full comment support via separate `createTaskComment()` and `createProjectComment()` methods, plus `getTaskComments()`, `getProjectComments()`, `updateComment()`, and `deleteComment()` with file attachment capabilities
 - **Task Movement**: Bulk task reorganization via `moveTasksToProject()`, `moveTasksToSection()`, and `moveTasksToParent()` for efficient workflow management
 - **Environment**: Accepts API token as string parameter, environment handling in calling code
 
 **Current Implementation State**: 
-- **Tools**: Complete tools-only implementation with both read and write operations (29 total tools):
+- **Tools**: Complete tools-only implementation with both read and write operations (28 total tools):
   - **Project Tools**: `get_projects`, `get_project`, `create_project`, `update_project`, `delete_project`
   - **Section Tools**: `get_sections`, `get_section`, `create_section`, `update_section`, `delete_section`
   - **Task Tools**: `get_tasks` (with filtering), `get_task`, `create_task`, `update_task`, `delete_task`, `close_task`, `reopen_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
   - **Label Tools**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
   - **Comment Tools**: `create_task_comment`, `create_project_comment`, `get_task_comments`, `get_project_comments`, `update_comment`, `delete_comment`
-  - **Advanced Tools**: `quick_add_task` (natural language processing)
 - **Testing**: Comprehensive TodoistClient test suite with pagination tests + MCP Inspector for visual testing
-- **Architecture**: Extensible structure with full comment management and natural language task creation
+- **Architecture**: Extensible structure with full comment management
 
 ## Development Tooling
 
@@ -136,7 +133,7 @@ Dockerfile        # Multi-stage Docker build with Bun
 - MCP Inspector (`@modelcontextprotocol/inspector`) for visual server testing
 - Run single test file: `bun test src/lib/todoist/client.spec.ts`
 - Pagination testing pattern: mock multiple API responses with `nextCursor` for comprehensive coverage
-- Advanced feature testing: natural language parsing validation, comment management with attachments, and bulk task movement operations
+- Advanced feature testing: comment management with attachments and bulk task movement operations
 
 **CI/CD**: Comprehensive GitHub Actions workflows
 - **ci.yml**: lint, typecheck, test, build (with Bun executable test), and Docker container testing
@@ -233,7 +230,6 @@ When testing the MCP server functionality, use the Playwright MCP server to auto
    - **Tasks**: `create_task`, `get_tasks`, `close_task`, `move_tasks_to_project`, `move_tasks_to_section`, `move_tasks_to_parent`
    - **Labels**: `create_label`, `update_label`, `get_label`, `get_labels`, `delete_label`
    - **Comments**: `create_task_comment`, `create_project_comment`, `get_task_comments`, `get_project_comments`, `update_comment`, `delete_comment`
-   - **Advanced**: `quick_add_task` with natural language parsing
-4. **Verify Results**: Check Japanese text support, natural language date parsing, hierarchical data structure, comment management, and bulk task movement operations
+4. **Verify Results**: Check Japanese text support, hierarchical data structure, comment management, and bulk task movement operations
 
-This provides comprehensive validation of all 29 MCP tools through automated browser interaction.
+This provides comprehensive validation of all 28 MCP tools through automated browser interaction.

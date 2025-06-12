@@ -26,7 +26,6 @@ import type {
   MoveTasksToProjectParams,
   MoveTasksToSectionParams,
   Project,
-  QuickAddTaskParams,
   ReopenTaskParams,
   Section,
   Task,
@@ -232,16 +231,6 @@ export class TodoistClient {
       content: params.content,
       projectId: params.projectId,
       attachment: params.attachment,
-    });
-  }
-
-  async quickAddTask(params: QuickAddTaskParams): Promise<Task> {
-    return this._api.quickAddTask({
-      text: params.text,
-      note: params.note,
-      reminder: params.reminder,
-      autoReminder: params.autoReminder,
-      meta: params.meta,
     });
   }
 
