@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/koki-develop/todoist-mcp-server/compare/v0.4.0...v0.4.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* Remove quick_add_task tool ([#50](https://github.com/koki-develop/todoist-mcp-server/issues/50)) ([17a3fd7](https://github.com/koki-develop/todoist-mcp-server/commit/17a3fd7e3b6a050e9d57e1ee9c799901c927da06))
+
 ## [0.4.0](https://github.com/koki-develop/todoist-mcp-server/compare/v0.3.0...v0.4.0) (2025-06-11)
 
 
