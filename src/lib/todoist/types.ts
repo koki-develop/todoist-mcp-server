@@ -162,6 +162,32 @@ export const createTaskParamsSchema = z.object({
     .string()
     .optional()
     .describe("Language for due date parsing (optional)"),
+  deadlineDate: z
+    .string()
+    .optional()
+    .describe("Deadline date YYYY-MM-DD (optional)"),
+  deadlineLang: z
+    .enum([
+      "en",
+      "da",
+      "pl",
+      "zh",
+      "ko",
+      "de",
+      "pt",
+      "ja",
+      "it",
+      "fr",
+      "sv",
+      "ru",
+      "es",
+      "nl",
+      "fi",
+      "nb",
+      "tw",
+    ])
+    .optional()
+    .describe("Language for deadline parsing (optional)"),
   assigneeId: z.string().optional().describe("Assignee user ID (optional)"),
   duration: z.number().optional().describe("Duration amount (optional)"),
   durationUnit: z
@@ -192,6 +218,32 @@ export const updateTaskParamsSchema = z.object({
     .string()
     .optional()
     .describe("Language for due date parsing (optional)"),
+  deadlineDate: z
+    .string()
+    .optional()
+    .describe("New deadline date YYYY-MM-DD (optional)"),
+  deadlineLang: z
+    .enum([
+      "en",
+      "da",
+      "pl",
+      "zh",
+      "ko",
+      "de",
+      "pt",
+      "ja",
+      "it",
+      "fr",
+      "sv",
+      "ru",
+      "es",
+      "nl",
+      "fi",
+      "nb",
+      "tw",
+    ])
+    .optional()
+    .describe("New language for deadline parsing (optional)"),
   assigneeId: z.string().optional().describe("New assignee user ID (optional)"),
   duration: z.number().optional().describe("New duration amount (optional)"),
   durationUnit: z
