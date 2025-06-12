@@ -1,4 +1,4 @@
-import { type AddTaskArgs, TodoistApi } from "@doist/todoist-api-typescript";
+import { TodoistApi } from "@doist/todoist-api-typescript";
 import type {
   CloseTaskParams,
   Comment,
@@ -126,7 +126,7 @@ export class TodoistClient {
   }
 
   async createTask(params: CreateTaskParams): Promise<Task> {
-    const apiParams: AddTaskArgs = {
+    return this._api.addTask({
       content: params.content,
       description: params.description,
       projectId: params.projectId,
@@ -154,9 +154,7 @@ export class TodoistClient {
         }
         return {};
       })(),
-    };
-
-    return this._api.addTask(apiParams);
+    });
   }
 
   async updateTask(params: UpdateTaskParams): Promise<Task> {
