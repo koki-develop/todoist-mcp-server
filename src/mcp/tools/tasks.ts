@@ -175,13 +175,12 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
     "get_tasks",
     "Retrieve Todoist tasks with flexible filtering options. Can filter by project, section, labels, or use custom Todoist filter queries. Returns a comprehensive list of tasks with their metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Without filters, returns all tasks accessible to the authenticated user.",
     getTasksParamsSchema.shape,
-    async ({ projectId, sectionId, labelId, filter, lang, ids }) => {
+    async ({ projectId, sectionId, parentId, label, ids }) => {
       const tasks = await client.getTasks({
         projectId,
         sectionId,
-        labelId,
-        filter,
-        lang,
+        parentId,
+        label,
         ids,
       });
 

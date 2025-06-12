@@ -114,9 +114,11 @@ export const getSectionParamsSchema = z.object({
 export const getTasksParamsSchema = z.object({
   projectId: z.string().optional().describe("Filter by project ID (optional)"),
   sectionId: z.string().optional().describe("Filter by section ID (optional)"),
-  labelId: z.string().optional().describe("Filter by label ID (optional)"),
-  filter: z.string().optional().describe("Filter expression (optional)"),
-  lang: z.string().optional().describe("Language for filter (optional)"),
+  parentId: z
+    .string()
+    .optional()
+    .describe("Filter by parent task ID (optional)"),
+  label: z.string().optional().describe("Filter by label name (optional)"),
   ids: z
     .array(z.string())
     .optional()

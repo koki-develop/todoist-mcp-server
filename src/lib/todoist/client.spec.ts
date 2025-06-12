@@ -147,6 +147,7 @@ const mockTodoistApi = {
   updateProject: mock(),
   deleteProject: mock(),
   getTasks: mock(),
+  getTasksByFilter: mock(),
   getTask: mock(),
   addTask: mock(),
   updateTask: mock(),
@@ -396,13 +397,20 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const tasks = await client.getTasks();
+      const tasks = await client.getTasks({});
 
       expect(tasks).toEqual([mockTask1, mockTask2]);
-      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith({ cursor: null });
+      expect(mockTodoistApi.getTasks).toHaveBeenCalledWith({
+        projectId: undefined,
+        sectionId: undefined,
+        parentId: undefined,
+        label: undefined,
+        ids: undefined,
+        cursor: null,
+      });
     });
 
-    test("should return filtered tasks", async () => {
+    test("should return filtered tasks by project", async () => {
       const mockTask = createMockTask({
         id: "1",
         content: "Project Task",
@@ -411,7 +419,6 @@ describe("TodoistClient", () => {
 
       const params: GetTasksParams = {
         projectId: "project123",
-        filter: "today",
       };
 
       mockTodoistApi.getTasks.mockResolvedValueOnce({
@@ -423,7 +430,11 @@ describe("TodoistClient", () => {
 
       expect(tasks).toEqual([mockTask]);
       expect(mockTodoistApi.getTasks).toHaveBeenCalledWith({
-        ...params,
+        projectId: params.projectId,
+        sectionId: undefined,
+        parentId: undefined,
+        label: undefined,
+        ids: undefined,
         cursor: null,
       });
     });
@@ -445,14 +456,24 @@ describe("TodoistClient", () => {
         nextCursor: null,
       });
 
-      const tasks = await client.getTasks();
+      const tasks = await client.getTasks({});
 
       expect(tasks).toEqual([mockTask1, mockTask2, mockTask3]);
       expect(mockTodoistApi.getTasks).toHaveBeenCalledTimes(2);
       expect(mockTodoistApi.getTasks).toHaveBeenNthCalledWith(1, {
+        projectId: undefined,
+        sectionId: undefined,
+        parentId: undefined,
+        label: undefined,
+        ids: undefined,
         cursor: null,
       });
       expect(mockTodoistApi.getTasks).toHaveBeenNthCalledWith(2, {
+        projectId: undefined,
+        sectionId: undefined,
+        parentId: undefined,
+        label: undefined,
+        ids: undefined,
         cursor: "cursor123",
       });
     });
