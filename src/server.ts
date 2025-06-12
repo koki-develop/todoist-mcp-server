@@ -27,5 +27,4 @@ export async function runServer() {
   // Start server
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Todoist MCP server running on stdio");
 }
