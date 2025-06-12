@@ -295,15 +295,6 @@ export const deleteCommentParamsSchema = z.object({
   id: z.string().min(1).describe("ID of the comment to delete"),
 });
 
-// Advanced schemas
-export const quickAddTaskParamsSchema = z.object({
-  text: z.string().min(1).describe("Task text with natural language parsing"),
-  note: z.string().optional().describe("Additional note (optional)"),
-  reminder: z.string().optional().describe("Reminder settings (optional)"),
-  autoReminder: z.boolean().optional().describe("Auto reminder (optional)"),
-  meta: z.boolean().optional().describe("Include metadata (optional)"),
-});
-
 // Move tasks schemas
 export const moveTasksToProjectParamsSchema = z.object({
   ids: z.array(z.string().min(1)).min(1).describe("Array of task IDs to move"),
@@ -352,7 +343,6 @@ export type GetProjectCommentsParams = z.infer<
   typeof getProjectCommentsParamsSchema
 >;
 export type DeleteCommentParams = z.infer<typeof deleteCommentParamsSchema>;
-export type QuickAddTaskParams = z.infer<typeof quickAddTaskParamsSchema>;
 // All parameter types inferred from schemas
 export type UpdateProjectParams = z.infer<typeof updateProjectParamsSchema>;
 export type UpdateSectionParams = z.infer<typeof updateSectionParamsSchema>;
