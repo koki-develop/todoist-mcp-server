@@ -69,6 +69,7 @@ The server provides the following tools that AI assistants can use to interact w
   - [`delete_section`](#delete_section)
 - [Tasks](#tasks)
   - [`get_tasks`](#get_tasks)
+  - [`get_tasks_by_filter`](#get_tasks_by_filter)
   - [`get_task`](#get_task)
   - [`create_task`](#create_task)
   - [`update_task`](#update_task)
@@ -186,6 +187,14 @@ Retrieves Todoist tasks with flexible filtering options. Returns a comprehensive
 | `filter` | No | Custom filter query in Todoist filter syntax |
 | `lang` | No | Language for filter parsing |
 | `ids` | No | Array of specific task IDs to retrieve |
+
+#### `get_tasks_by_filter`
+Retrieves Todoist tasks using advanced filter syntax. Supports powerful filter queries using Todoist's natural language filter syntax for complex task searches. Automatically handles pagination to retrieve all matching tasks.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **`query`** | **Yes** | Filter query using Todoist's advanced filter syntax. Supports operators: `&` (AND), `\|` (OR), `!` (NOT), `()` (grouping). Filter types include: dates (`today`, `overdue`, `no date`, `7 days`), projects (`#Work`, `##Work` for sub-projects), labels (`@urgent`, `@waiting`), priority (`p1`, `p2`, `p3`, `p4`), assignments (`assigned to: name`), and search (`search: keyword`). Examples: `overdue & @work`, `today \| tomorrow`, `(p1 \| p2) & 7 days`, `#Work & !subtask`, `assigned to: me & @urgent` |
+| `lang` | No | IETF language tag defining what language the filter is written in, if different from default English (e.g., 'ja' for Japanese, 'es' for Spanish) |
 
 #### `get_task`
 Accesses detailed information for a specific Todoist task using its unique identifier. Provides complete task metadata including content, description, project and section assignment, due date information, priority level, assigned labels, completion status, parent-child relationships, and timestamps.

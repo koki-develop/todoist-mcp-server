@@ -5,6 +5,7 @@ import {
   createTaskParamsSchema,
   deleteTaskParamsSchema,
   getTaskParamsSchema,
+  getTasksByFilterParamsSchema,
   getTasksParamsSchema,
   moveTasksToParentParamsSchema,
   moveTasksToProjectParamsSchema,
@@ -189,6 +190,32 @@ export function registerTaskTools(server: McpServer, client: TodoistClient) {
           {
             type: "text",
             text: `Retrieved ${tasks.length} task(s)`,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(tasks, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  // Get tasks using advanced filter syntax
+  server.tool(
+    "get_tasks_by_filter",
+    "Retrieve Todoist tasks using advanced filter syntax. Supports powerful filter queries using Todoist's natural language filter syntax such as 'overdue & @work', 'today | tomorrow', 'p1 & assigned to: me', etc. This tool leverages Todoist's built-in filtering capabilities for complex task searches. Returns comprehensive task metadata including content, description, project assignment, due dates, priority levels, labels, completion status, and hierarchy information. Automatically handles pagination to retrieve all matching tasks.",
+    getTasksByFilterParamsSchema.shape,
+    async ({ query, lang }) => {
+      const tasks = await client.getTasksByFilter({
+        query,
+        lang,
+      });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Retrieved ${tasks.length} task(s) using filter: "${query}"`,
           },
           {
             type: "text",
