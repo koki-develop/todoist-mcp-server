@@ -16,7 +16,7 @@
   "dependencies": {
     "@doist/todoist-api-typescript": "5.0.0",
     "@modelcontextprotocol/sdk": "1.12.1",
-    "zod": "3.25.56"
+    "zod": "3.25.71"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
